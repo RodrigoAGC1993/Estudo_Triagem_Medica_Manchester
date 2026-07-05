@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Triagem Médica - Protocolo de Manchester</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Triagem Médica</h1>
+            <p>Baseado no Protocolo de Manchester — Classificação de Risco e Encaminhamento</p>
+            <small>Fonte: <a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z" target="_blank">Ministério da Saúde — Saúde de A a Z</a></small>
+        </header>
+
+        <form id="triagem-form">
+            <!-- Identificação do Paciente -->
+            <fieldset>
+                <legend>Identificação do Paciente</legend>
+                <div class="grid-2-col">
+                    <div class="input-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" placeholder="Nome do paciente" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="idade">Idade</label>
+                        <input type="number" id="idade" name="idade" placeholder="Ex: 35" min="0" max="120" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="genero">Gênero</label>
+                        <select id="genero" name="genero" required>
+                            <option value="">Selecione...</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="feminino">Feminino</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="queixa">Queixa Principal</label>
+                        <input type="text" id="queixa" name="queixa" placeholder="Motivo da consulta">
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Sinais Vitais -->
+            <fieldset>
+                <legend>Sinais Vitais</legend>
+                <div class="grid-2-col">
+                    <div class="input-group">
+                        <label for="pressao">Pressão Arterial (Sistólica/Diastólica)</label>
+                        <div class="input-with-indicator">
+                            <input type="text" id="pressao" name="pressao" placeholder="Ex: 120/80">
+                            <span id="pa-indicator" class="indicator"></span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="temperatura">Temperatura Corporal (°C)</label>
+                        <div class="input-with-indicator">
+                            <input type="text" id="temperatura" name="temperatura" placeholder="Ex: 36.5">
+                            <span id="temp-indicator" class="indicator"></span>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Sintomas -->
+            <fieldset>
+                <legend>Sintomas</legend>
+
+                <!-- Sintomas Gerais / Constitucionais -->
+                <div class="symptom-category">
+                    <h4>🌡️ Gerais / Constitucionais</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="febre"> Febre</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="calafrios"> Calafrios</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="cansaco_fadiga"> Cansaço / Fadiga</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="perda_peso"> Perda de peso inexplicada</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sudorese_noturna"> Sudorese noturna</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sudorese_fria"> Sudorese fria</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="ganglios_inchados"> Gânglios/ínguas inchados</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="mal_estar_geral"> Mal-estar geral</label>
+                    </div>
+                </div>
+
+                <!-- Neurológicos -->
+                <div class="symptom-category">
+                    <h4>🧠 Neurológicos</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_cabeca"> Dor de cabeça intensa</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="tontura_vertigem"> Tontura / Vertigem</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="formigamento_dormencia"> Formigamento / Dormência</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="visao_turva"> Visão turva / Alterações visuais</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="convulsao"> Convulsão</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="desmaio_sincope"> Desmaio / Síncope</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="insonia"> Insônia</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="confusao_mental"> Confusão mental</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="alteracao_fala"> Alteração da fala</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="fraqueza_unilateral"> Fraqueza em um lado do corpo</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="perda_equilibrio"> Perda de equilíbrio</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="tremores"> Tremores</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="perda_memoria"> Perda de memória</label>
+                    </div>
+                </div>
+
+                <!-- Cardiovasculares -->
+                <div class="symptom-category">
+                    <h4>❤️ Cardiovasculares</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_peito"> Dor / Aperto no peito</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="palpitacoes"> Palpitações</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="falta_ar"> Falta de ar</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="edema_membros"> Inchaço nas pernas / pés</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="zumbido_ouvido"> Zumbido no ouvido</label>
+                    </div>
+                </div>
+
+                <!-- Respiratórios -->
+                <div class="symptom-category">
+                    <h4>🫁 Respiratórios</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="tosse"> Tosse persistente</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="tosse_com_sangue"> Tosse com sangue</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="chiado_peito"> Chiado no peito</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_garganta"> Dor de garganta</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="nariz_entupido_coriza"> Nariz entupido / Coriza</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="espirros_frequentes"> Espirros frequentes</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="respiracao_rapida"> Respiração rápida e curta</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="cianose"> Lábios / extremidades roxas (cianose)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_toracica_respirar"> Dor no peito ao respirar</label>
+                    </div>
+                </div>
+
+                <!-- Otorrinolaringológicos -->
+                <div class="symptom-category">
+                    <h4>👂 Ouvido, Nariz e Garganta</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_ouvido"> Dor de ouvido</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="perda_audicao"> Perda de audição</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="secrecao_ouvido"> Secreção no ouvido</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="rouquidao"> Rouquidão persistente</label>
+                    </div>
+                </div>
+
+                <!-- Gastrointestinais -->
+                <div class="symptom-category">
+                    <h4>🫃 Gastrointestinais</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="nausea_vomito"> Náusea / Vômito</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_abdominal"> Dor abdominal</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="diarreia"> Diarreia</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="diarreia_sanguinolenta"> Diarreia com sangue</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="constipacao"> Constipação (intestino preso)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="azia_refluxo"> Azia / Refluxo</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sangue_fezes"> Sangue nas fezes</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="ictericia"> Pele / olhos amarelados (icterícia)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="distensao_abdominal"> Barriga inchada / distendida</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dificuldade_engolir"> Dificuldade para engolir</label>
+                    </div>
+                </div>
+
+                <!-- Musculoesqueléticos -->
+                <div class="symptom-category">
+                    <h4>🦴 Musculoesqueléticos</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_costas"> Dor nas costas</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_muscular"> Dor muscular</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_articulacoes"> Dor nas articulações</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="inchaco_articular"> Inchaço articular</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="rigidez_matinal"> Rigidez matinal nas articulações</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_retro_ocular"> Dor atrás dos olhos</label>
+                    </div>
+                </div>
+
+                <!-- Dermatológicos -->
+                <div class="symptom-category">
+                    <h4>🩹 Dermatológicos</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="lesoes_pele"> Lesões na pele</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="coceira"> Coceira intensa</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="manchas_vermelhas"> Manchas vermelhas no corpo</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="manchas_dormentes"> Manchas com perda de sensibilidade</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="vesiculas_bolhas"> Vesículas / Bolhas na pele</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="queda_cabelo"> Queda de cabelo</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="feridas_nao_cicatrizam"> Feridas que não cicatrizam</label>
+                    </div>
+                </div>
+
+                <!-- Saúde Mental -->
+                <div class="symptom-category">
+                    <h4>🧘 Saúde Mental</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="ansiedade"> Ansiedade / Pânico</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="tristeza_apatia"> Tristeza / Apatia persistente</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="perda_interesse"> Perda de interesse em atividades</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="irritabilidade"> Irritabilidade excessiva</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="alteracao_apetite"> Alteração no apetite</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="pensamentos_morte"> Pensamentos sobre morte / suicídio</label>
+                    </div>
+                </div>
+
+                <!-- Endócrinos / Metabólicos -->
+                <div class="symptom-category">
+                    <h4>⚖️ Endócrinos / Metabólicos</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sede_excessiva"> Sede excessiva</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="fome_excessiva"> Fome excessiva</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="urina_frequente"> Urina frequente</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="visao_embaçada"> Visão embaçada</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="cicatrizacao_lenta"> Cicatrização lenta</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="ganho_peso_inexplicado"> Ganho de peso inexplicado</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="intolerancia_frio_calor"> Intolerância ao frio ou calor</label>
+                    </div>
+                </div>
+
+                <!-- Infectologia / Arboviroses -->
+                <div class="symptom-category">
+                    <h4>🦟 Infectologia / Arboviroses</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="manchas_corpo"> Manchas vermelhas pelo corpo (exantema)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sangramento"> Sangramento (gengiva, nariz, pele)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sangramento_nasal"> Sangramento nasal</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_olhos"> Dor nos olhos / vermelhidão</label>
+                    </div>
+                </div>
+
+                <!-- Nefrológicos / Urinários -->
+                <div class="symptom-category">
+                    <h4>🫘 Nefrológicos / Urinários</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_lombar"> Dor lombar / nos rins</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="urina_escura"> Urina escura (cor de coca-cola)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="urina_espumosa"> Urina espumosa</label>
+                    </div>
+                </div>
+
+                <!-- Oftalmológicos -->
+                <div class="symptom-category">
+                    <h4>👁️ Oftalmológicos</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_ocular"> Dor nos olhos</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="olho_vermelho"> Olho vermelho</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="secrecao_ocular"> Secreção nos olhos</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="perda_visao_subita"> Perda súbita de visão</label>
+                    </div>
+                </div>
+
+                <!-- Hematológicos -->
+                <div class="symptom-category">
+                    <h4>🩸 Hematológicos</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="palidez"> Palidez intensa</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="hematomas_espontaneos"> Hematomas (roxos) espontâneos</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sangramento_gengival"> Sangramento na gengiva</label>
+                    </div>
+                </div>
+
+                <!-- Sintomas Específicos por Gênero -->
+                <div id="sintomas-especificos-container" class="symptom-category hidden">
+                    <h4 id="genero-titulo">Sintomas Específicos</h4>
+
+                    <!-- Femininos -->
+                    <div id="sintomas-femininos" class="hidden">
+                        <div class="symptoms-grid">
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="colica_menstrual"> Cólica menstrual intensa</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="corrimento_vaginal"> Corrimento vaginal anormal</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="alteracoes_mama"> Alterações na mama</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_urinar"> Dor ao urinar</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sangramento_vaginal"> Sangramento vaginal fora do período</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="atraso_menstrual"> Atraso menstrual</label>
+                        </div>
+                    </div>
+
+                    <!-- Masculinos -->
+                    <div id="sintomas-masculinos" class="hidden">
+                        <div class="symptoms-grid">
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_testicular"> Dor testicular</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dificuldade_urinar"> Dificuldade para urinar</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="sangue_urina_esperma"> Sangue na urina ou esperma</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_urinar"> Dor ao urinar</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sintomas" value="jato_urinario_fraco"> Jato urinário fraco</label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <button type="submit">Realizar Triagem</button>
+        </form>
+
+        <!-- Resultado -->
+        <div id="resultado" class="hidden">
+            <h2 id="resultado-titulo"></h2>
+            <p id="especialidade"></p>
+            <p id="observacao"></p>
+        </div>
+
+        <footer class="disclaimer">
+            <p><strong>⚠️ Cláusula de Responsabilidade:</strong> Este sistema é uma ferramenta de apoio acadêmico e não substitui a avaliação de um profissional de saúde qualificado. Em caso de emergência, ligue <strong>SAMU 192</strong> ou <strong>Bombeiros 193</strong>.</p>
+            <p><small>Fonte: <a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z" target="_blank">Ministério da Saúde — Saúde de A a Z</a> | Referências: 7ª Diretriz Brasileira de Hipertensão Arterial, Manuais MSD, Protocolo de Manchester.</small></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
