@@ -605,6 +605,10 @@ let novelaVitals = {};
 let novelaVitalInterval = null;
 
 function initNovela() {
+    // Merge cases from novelas-extra.js if loaded
+    if (typeof novelaCasesExtra !== 'undefined') {
+        novelaCases.push(...novelaCasesExtra);
+    }
     renderNovelaList();
 }
 
