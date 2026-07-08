@@ -121,7 +121,56 @@ const dicionarioTermos = [
     { term: 'Vasopressor', simple: 'Remédio que aumenta a pressão em pacientes graves', detail: 'Dado na veia em UTI quando a pressão está muito baixa (choque). Ex: noradrenalina. Mantém os órgãos recebendo sangue.' },
 
     // === X ===
-    { term: 'Xantocromia', simple: 'Líquido da coluna amarelado (indica sangramento antigo)', detail: 'Quando o líquido da punção lombar sai amarelado, indica que houve sangramento no cérebro horas antes. Confirma hemorragia subaracnoidea.' }
+    { term: 'Xantocromia', simple: 'Líquido da coluna amarelado (indica sangramento antigo)', detail: 'Quando o líquido da punção lombar sai amarelado, indica que houve sangramento no cérebro horas antes. Confirma hemorragia subaracnoidea.' },
+
+    // === TERMOS ADICIONAIS DO SITE ===
+    // (doenças, condições e procedimentos mencionados nas outras abas)
+
+    { term: 'Acalásia', simple: 'O esôfago não consegue empurrar a comida para o estômago', detail: 'Doença em que o músculo na parte final do esôfago não relaxa. A comida "trava" e a pessoa pode regurgitar alimentos não digeridos.' },
+    { term: 'Acidose metabólica', simple: 'O sangue ficou ácido demais', detail: 'pH do sangue abaixo de 7,35 por causas metabólicas (diabetes descompensado, insuficiência renal, intoxicações). O corpo tenta compensar respirando mais rápido (Kussmaul).' },
+    { term: 'Adenomiose', simple: 'Endométrio (tecido do útero) invadindo a parede muscular do útero', detail: 'Causa sangramento menstrual abundante e cólicas fortes. Mais comum após os 35 anos. Tratamento: hormônios ou histerectomia em casos graves.' },
+    { term: 'Aneurisma', simple: 'Dilatação ("balão") em uma artéria', detail: 'A parede de uma artéria fica fraca e se dilata. Se romper, causa hemorragia grave. Mais comuns: aorta abdominal e artérias cerebrais.' },
+    { term: 'Aterosclerose', simple: 'Acúmulo de gordura nas artérias (entupimento)', detail: 'Placas de colesterol se depositam nas paredes das artérias ao longo dos anos, estreitando-as. Causa de infarto, AVC e doença vascular periférica.' },
+    { term: 'Carcinoma', simple: 'Tipo de câncer que nasce nos tecidos de revestimento', detail: 'Câncer que se origina nas células epiteliais (pele, mucosas, órgãos internos). Ex: carcinoma renal = câncer do rim, carcinoma de pulmão = câncer do pulmão.' },
+    { term: 'Carcinoma renal', simple: 'Câncer do rim', detail: 'Tumor maligno que nasce no rim. Pode causar sangue na urina, dor lombar e perda de peso. Às vezes descoberto acidentalmente em exames de imagem.' },
+    { term: 'Cetoacidose diabética', simple: 'Complicação grave do diabetes — o corpo produz ácidos tóxicos', detail: 'Sem insulina, o corpo queima gordura e produz cetonas (ácidos). Causa hálito frutado, respiração rápida, confusão e pode levar ao coma. Emergência.' },
+    { term: 'Colangite', simple: 'Infecção das vias biliares (canais da bile)', detail: 'Geralmente causada por cálculo biliar que obstrui o canal. Tríade de Charcot: febre + icterícia + dor abdominal direita. Emergência.' },
+    { term: 'Colestase', simple: 'A bile está "parada" e não flui normalmente', detail: 'Pode ser por cálculos, tumores ou doenças do fígado. Causa coceira intensa, icterícia e fezes claras.' },
+    { term: 'Decorticação', simple: 'Postura anormal com braços dobrados e pernas esticadas', detail: 'Sinal de lesão cerebral grave. A pessoa flexiona os braços junto ao corpo e estica as pernas. Indica dano acima do tronco cerebral.' },
+    { term: 'Descerebração', simple: 'Postura anormal com braços e pernas completamente esticados', detail: 'Sinal de lesão cerebral muito grave (pior que decorticação). Toda musculatura fica em extensão. Indica dano no tronco cerebral.' },
+    { term: 'Diálise', simple: 'Máquina que faz o trabalho dos rins quando eles param', detail: 'Filtra o sangue artificialmente, removendo toxinas e excesso de líquido. Necessária na insuficiência renal terminal ou aguda grave.' },
+    { term: 'Dissecção de aorta', simple: 'A parede da aorta (maior artéria do corpo) se rasga', detail: 'O sangue entra entre as camadas da parede arterial. Causa dor torácica/lombar "rasgante" de início abrupto. Pode ser fatal em minutos. Emergência cirúrgica.' },
+    { term: 'Diverticulite', simple: 'Inflamação de "bolsinhas" no intestino grosso', detail: 'Divertículos são pequenas bolsas na parede do intestino que podem inflamar. Causa dor no lado esquerdo da barriga, febre e alteração intestinal.' },
+    { term: 'Eclâmpsia', simple: 'Convulsão na gravidez por pressão muito alta', detail: 'Complicação grave da pré-eclâmpsia. A gestante convulsiona por causa da hipertensão severa. Risco de morte para mãe e bebê.' },
+    { term: 'Encefalopatia', simple: 'O cérebro não está funcionando bem', detail: 'Termo geral para disfunção cerebral. Pode ser hepática (fígado não filtra toxinas), urêmica (rins falhando) ou metabólica.' },
+    { term: 'Endocardite', simple: 'Infecção das válvulas do coração', detail: 'Bactérias se instalam nas válvulas cardíacas. Causa febre prolongada, sopro novo e pode soltar pedaços infectados para o corpo (êmbolos).' },
+    { term: 'Endometriose', simple: 'Tecido do útero cresce em lugares errados (fora do útero)', detail: 'Causa dor menstrual intensa, dor na relação sexual e dificuldade para engravidar. Comum em mulheres em idade fértil.' },
+    { term: 'Estenose', simple: 'Estreitamento de um canal ou válvula', detail: 'Ex: estenose aórtica = válvula do coração estreita e não abre direito. Estenose uretral = canal da urina estreitado.' },
+    { term: 'Glomerulonefrite', simple: 'Inflamação dos filtros do rim', detail: 'Os glomérulos (pequenos filtros nos rins) ficam inflamados. Causa sangue e proteína na urina, inchaço e pressão alta.' },
+    { term: 'Hemólise', simple: 'Destruição acelerada dos glóbulos vermelhos', detail: 'Os glóbulos vermelhos se rompem antes do tempo normal. Causa anemia, icterícia e urina escura. Pode ser por doenças autoimunes, infecções ou medicamentos.' },
+    { term: 'Hepatite', simple: 'Inflamação do fígado', detail: 'Pode ser por vírus (A, B, C), álcool, medicamentos ou autoimune. Causa fadiga, icterícia, dor abdominal e alteração das enzimas hepáticas.' },
+    { term: 'Herniação cerebral', simple: 'O cérebro inchado é empurrado para um lado ou para baixo', detail: 'Complicação gravíssima de lesões cerebrais (tumor, hemorragia, edema). O cérebro é comprimido contra estruturas ósseas. Pode ser rapidamente fatal.' },
+    { term: 'Hiperplasia prostática', simple: 'Próstata aumentada (cresceu demais)', detail: 'Comum em homens > 50 anos. A próstata aumentada comprime a uretra, dificultando urinar. Causa jato fraco, noctúria e esvaziamento incompleto.' },
+    { term: 'Hipotireoidismo', simple: 'Tireoide funcionando de menos (lenta)', detail: 'A tireoide não produz hormônios suficientes. Causa cansaço, ganho de peso, pele seca, prisão de ventre e intolerância ao frio.' },
+    { term: 'Hipertireoidismo', simple: 'Tireoide funcionando demais (acelerada)', detail: 'A tireoide produz hormônios em excesso. Causa perda de peso, taquicardia, tremor, ansiedade e intolerância ao calor.' },
+    { term: 'Linfoma', simple: 'Câncer do sistema linfático (gânglios)', detail: 'Tumor que nasce nos linfonodos (ínguas). Sintomas: ínguas indolores que crescem, febre, sudorese noturna e perda de peso (sintomas B).' },
+    { term: 'Manitol', simple: 'Medicamento para reduzir o inchaço do cérebro', detail: 'Líquido dado na veia que "puxa" água do cérebro edemaciado. Usado em emergências como herniação cerebral e hipertensão intracraniana.' },
+    { term: 'Miastenia gravis', simple: 'Doença que causa fraqueza muscular progressiva ao longo do dia', detail: 'O sistema imune ataca a comunicação entre nervos e músculos. A pessoa fica com pálpebras caídas e fraqueza que piora com atividade e melhora com repouso.' },
+    { term: 'Neuropatia', simple: 'Dano nos nervos periféricos', detail: 'Os nervos das mãos e pés são os mais afetados. Causa dormência, formigamento, dor em queimação. Causa mais comum: diabetes.' },
+    { term: 'Nimodipino', simple: 'Remédio usado para prevenir espasmo nas artérias do cérebro', detail: 'Dado após hemorragia subaracnoidea para evitar que as artérias cerebrais se contraiam (vasoespasmo), o que pioraria o dano cerebral.' },
+    { term: 'Pancreatite', simple: 'Inflamação do pâncreas', detail: 'Causa dor intensa na parte superior da barriga que irradia para as costas, náusea e vômito. Causas mais comuns: cálculos biliares e álcool.' },
+    { term: 'Pericardite', simple: 'Inflamação da membrana que envolve o coração', detail: 'Causa dor no peito que piora ao deitar e melhora ao sentar-se para frente. Pode ser por vírus, autoimune ou após infarto.' },
+    { term: 'Peritonite', simple: 'Infecção/inflamação da membrana que reveste o abdome por dentro', detail: 'Emergência cirúrgica. Causa dor abdominal intensa, barriga rígida ("em tábua"), febre. Geralmente por perfuração de víscera (apendicite, úlcera).' },
+    { term: 'Pneumonia', simple: 'Infecção no pulmão', detail: 'Os alvéolos pulmonares se enchem de pus/líquido. Causa tosse com catarro, febre, falta de ar e dor ao respirar. Tratamento: antibióticos.' },
+    { term: 'Pré-eclâmpsia', simple: 'Pressão alta na gravidez com dano a órgãos', detail: 'Pressão ≥ 140/90 após 20 semanas de gravidez + proteína na urina. Grave: pode causar convulsão (eclâmpsia), AVC e morte fetal. Tratamento: sulfato de magnésio + parto.' },
+    { term: 'Prolactinoma', simple: 'Tumor benigno na hipófise que produz excesso de prolactina', detail: 'Causa produção de leite fora da gravidez (galactorreia) e menstruação irregular/ausente. Tratamento geralmente com medicamentos (cabergolina).' },
+    { term: 'Prostatite', simple: 'Inflamação/infecção da próstata', detail: 'Causa dor ao urinar, dor perineal (entre escroto e ânus), febre e dificuldade para urinar. Pode ser aguda (bacteriana) ou crônica.' },
+    { term: 'Reticulocitose', simple: 'Aumento de glóbulos vermelhos jovens no sangue', detail: 'A medula óssea está produzindo mais hemácias para compensar uma perda ou destruição. Indica que a anemia é por hemólise ou sangramento, não por falta de produção.' },
+    { term: 'Síndrome nefrótica', simple: 'Os rins perdem muita proteína na urina', detail: 'Causa inchaço generalizado (especialmente nos olhos pela manhã), urina espumosa, colesterol alto e risco de trombose. Perda de proteína > 3,5g/dia.' },
+    { term: 'Tamponamento cardíaco', simple: 'Líquido apertando o coração e impedindo-o de encher', detail: 'Acúmulo de líquido (ou sangue) no saco que envolve o coração. O coração não consegue se expandir e bombear. Tríade: hipotensão + jugulares distendidas + bulhas abafadas.' },
+    { term: 'Trombocitopenia', simple: 'Plaquetas baixas no sangue', detail: 'Plaquetas são as células que ajudam o sangue a coagular. Quando muito baixas (< 50.000), há risco de sangramento espontâneo.' },
+    { term: 'Vasculite', simple: 'Inflamação dos vasos sanguíneos', detail: 'O sistema imune ataca os vasos, causando inflamação. Pode afetar vasos de qualquer tamanho e qualquer órgão. Causa variada de sintomas.' },
+    { term: 'Vasoespasmo', simple: 'Artéria que se contrai (aperta) de repente', detail: 'A artéria fica mais estreita por contração muscular. No cérebro após hemorragia, pode causar AVC secundário. No coração, pode simular infarto (angina de Prinzmetal).' }
 ];
 
 // ============================================================
