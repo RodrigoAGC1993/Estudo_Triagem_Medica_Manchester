@@ -375,6 +375,220 @@ const plantaoCases = [
             text: '🎉 Enoxaparina iniciada + transição para Rivaroxabana 15mg 12/12h por 21 dias, depois 20mg/dia. Suspensão do anticoncepcional oral. Investigação de trombofilia programada. Alta em 3 dias. Anticoagulação por mínimo 3 meses.'
         }
     ]
+},
+// === CASO 4: CETOACIDOSE DIABÉTICA ===
+{
+    id: 'cad_plantao',
+    title: 'Adolescente com Confusão e Respiração Rápida',
+    difficulty: 'Intermediário',
+    specialty: 'Endocrinologia / Emergência',
+    icon: '⚖️',
+    initialVitals: { fc: 118, pas: 100, pad: 60, spo2: 97, fr: 30, temp: 37.0 },
+    steps: [
+        { type: 'info', title: '📋 Chamado', text: 'Domingo, 8h. Mãe traz adolescente de 16 anos, magra, que está "estranha" desde ontem. Queixa de muita sede, urinando muito, e hoje amanheceu confusa. Mãe sentiu "cheiro estranho" na respiração.' },
+        { type: 'choice', title: '🩺 Primeira Avaliação', text: 'A paciente está sonolenta, respira profundamente e rápido (Kussmaul). Hálito com odor frutado. Qual exame imediato à beira-leito?',
+            options: [
+                { text: 'Glicemia capilar (dextro)', points: 3, feedback: '✅ Correto! Glicemia capilar em < 1 minuto. Hálito cetônico + Kussmaul + poliúria = CAD até prova contrária. Dextro é imediato.' },
+                { text: 'TC de crânio', points: -1, feedback: '❌ TC é para AVC/lesão estrutural. O quadro aponta para causa metabólica (CAD). Dextro primeiro.' },
+                { text: 'Rx de tórax', points: 0, feedback: '⚠️ Rx pode ser útil depois, mas não é a prioridade. Glicemia capilar é o teste-chave aqui.' },
+                { text: 'Eletroencefalograma', points: -2, feedback: '❌ EEG é para epilepsia. Não se aplica aqui. O quadro é metabólico.' }
+            ]
+        },
+        { type: 'info', title: '📊 Resultados', text: 'Glicemia capilar: 480 mg/dL (!!)\nGasometria: pH 7,18 | HCO3: 8 | pCO2: 18\nCetonúria: ++++\nK+: 5,8 mEq/L\n\nDiagnóstico: Cetoacidose Diabética (CAD) grave\n(pH < 7,2 + glicemia > 250 + cetose)' },
+        { type: 'choice', title: '💊 Tratamento Inicial', text: 'CAD grave confirmada. O que fazer PRIMEIRO?',
+            options: [
+                { text: 'Hidratação IV agressiva: SF 0,9% — 1-1,5L na 1ª hora', points: 3, feedback: '✅ Correto! A prioridade número 1 na CAD é VOLUME. Pacientes perdem 5-10L de líquido. SF 0,9% 1-1,5L na primeira hora, depois 250-500mL/h.' },
+                { text: 'Insulina Regular em bolus IV 20 unidades', points: 0, feedback: '⚠️ Insulina é fundamental, mas NÃO em bolus alto e NÃO antes do volume. Hidratação primeiro → insulina em infusão contínua depois (0,1U/kg/h).' },
+                { text: 'Bicarbonato de sódio IV', points: -1, feedback: '❌ Bicarbonato só é indicado se pH < 6,9 (acidose extrema). pH 7,18 não requer. A correção vem com insulina + hidratação.' },
+                { text: 'Gluconato de cálcio IV (K+ elevado)', points: 1, feedback: '⚠️ K+ 5,8 é elevado, mas na CAD o potássio total corporal está DEPLETADO (sai da célula pela acidose). Ao corrigir pH, K+ vai cair. Monitorar, mas volume+insulina resolvem.' }
+            ]
+        },
+        { type: 'choice', title: '💉 Insulinoterapia', text: 'Após 1h de hidratação, PA melhorou (110/70). Quando e como iniciar insulina?',
+            options: [
+                { text: 'Insulina Regular IV contínua: 0,1 U/kg/hora (após confirmar K+ > 3,3)', points: 3, feedback: '✅ Perfeito! Infusão contínua de insulina Regular. Meta: baixar glicemia 50-70 mg/dL/hora. Só iniciar se K+ > 3,3 (repor K antes se necessário).' },
+                { text: 'Insulina NPH subcutânea 20U', points: -2, feedback: '❌ NPH é insulina basal de ação lenta. Na CAD grave, precisa ser IV contínua para controle preciso. SC é para depois da resolução.' },
+                { text: 'Metformina 850mg VO', points: -3, feedback: '❌ Metformina é CONTRAINDICADA na CAD (risco de acidose lática). Além disso, paciente confusa não deve receber VO.' },
+                { text: 'Sem insulina — apenas soro resolve', points: -2, feedback: '❌ Hidratação sozinha não resolve cetose. Insulina é essencial para interromper a lipólise e cetogênese.' }
+            ]
+        },
+        { type: 'choice', title: '🔬 Monitoramento', text: 'A paciente está recebendo SF + Insulina IV. Com que frequência monitorar glicemia e K+ nas primeiras horas?',
+            options: [
+                { text: 'Glicemia a cada 1h + K+ a cada 2h', points: 3, feedback: '✅ Correto! Glicemia horária (ajustar velocidade da insulina), eletrólitos a cada 2-4h. Meta: queda de 50-70mg/dL/h.' },
+                { text: 'Glicemia a cada 6h', points: -1, feedback: '❌ Muito espaçado. Na CAD grave a glicemia muda rapidamente — pode causar hipoglicemia se não monitorar de perto.' },
+                { text: 'Apenas 1 controle após 12h', points: -2, feedback: '❌ Perigoso. Paciente em CAD pode ter hipo/hipercalemia fatal se não monitorada de perto.' },
+                { text: 'Não precisa repetir — já tem o diagnóstico', points: -3, feedback: '❌ Gravíssimo. O tratamento da CAD requer monitoramento intensivo contínuo até resolução (pH > 7,3, HCO3 > 18, glicemia < 200).' }
+            ]
+        },
+        { type: 'info', title: '✅ Desfecho', text: '🎉 Após 12h: pH 7,35, HCO3 16, glicemia 180. Cetose resolvendo. Transição para insulina SC (basal-bolus). Paciente é DM1 não diagnosticada — primeiro episódio. Encaminhada para endocrinologia + educação em diabetes.' }
+    ]
+},
+// === CASO 5: ANAFILAXIA ===
+{
+    id: 'anafilaxia_plantao',
+    title: 'Reação Alérgica Grave Após Almoço',
+    difficulty: 'Básico',
+    specialty: 'Emergência / Alergologia',
+    icon: '🫁',
+    initialVitals: { fc: 130, pas: 80, pad: 50, spo2: 88, fr: 28, temp: 36.8 },
+    steps: [
+        { type: 'info', title: '📋 Chamado', text: 'Terça-feira, 13h. Homem de 35 anos chega carregado por colegas de trabalho. Estava almoçando no restaurante quando "inchou todo" e começou a sentir falta de ar. Histórico de alergia a camarão (não sabia que tinha no prato).' },
+        { type: 'choice', title: '🩺 Primeira Ação', text: 'Paciente com edema de lábios e língua, urticária generalizada, estridor inspiratório e PA 80/50. O que fazer PRIMEIRO?',
+            options: [
+                { text: 'Adrenalina 0,3-0,5mg IM na coxa (face lateral)', points: 3, feedback: '✅ CORRETO! Adrenalina IM é a PRIMEIRA e mais importante ação na anafilaxia. Não há contraindicação absoluta. Deve ser dada IMEDIATAMENTE.' },
+                { text: 'Anti-histamínico IV (difenidramina)', points: 0, feedback: '⚠️ Anti-histamínico é adjuvante, não tratamento de primeira linha. Não reverte broncoespasmo nem choque. Adrenalina primeiro!' },
+                { text: 'Corticoide IV (hidrocortisona)', points: 0, feedback: '⚠️ Corticoide previne reação bifásica (horas depois), mas leva 4-6h para agir. Não é a primeira ação — adrenalina é.' },
+                { text: 'Observar por 15 min e reavaliar', points: -3, feedback: '❌ PERIGOSO! Anafilaxia com estridor e hipotensão pode evoluir para PCR em minutos. Adrenalina IMEDIATA salva vidas.' }
+            ]
+        },
+        { type: 'choice', title: '💉 Via e Dose da Adrenalina', text: 'Qual a via CORRETA para adrenalina na anafilaxia (paciente adulto, NÃO em PCR)?',
+            options: [
+                { text: 'IM (intramuscular) na face lateral da coxa — 0,3 a 0,5mg (1:1000)', points: 3, feedback: '✅ Correto! Adrenalina 1:1000 IM no vasto lateral da coxa. Pode repetir a cada 5-15 min se necessário. Via IV só em choque refratário (diluída, em bomba).' },
+                { text: 'IV push 1mg (como na PCR)', points: -3, feedback: '❌ PERIGOSO! 1mg IV push é dose de PCR. Em paciente com pulso, causa arritmia fatal. Na anafilaxia com pulso: IM 0,3-0,5mg.' },
+                { text: 'Subcutânea no braço — 0,1mg', points: -1, feedback: '❌ Via SC tem absorção lenta e imprevisível. IM na coxa é superior (absorção rápida pelo músculo vasto lateral).' },
+                { text: 'Nebulização com adrenalina', points: 1, feedback: '⚠️ Adrenalina nebulizada ajuda no estridor (edema laríngeo) como complemento, mas NÃO substitui a IM sistêmica.' }
+            ]
+        },
+        { type: 'info', title: '📊 Resposta (3 min após adrenalina IM)', text: 'PA: 95/62 (melhorando) | FC: 115 (descendo) | SpO2: 91% com O2\nEstridor diminuiu mas persiste leve. Urticária ainda presente. Paciente mais alerta.' },
+        { type: 'choice', title: '💊 Próximos Passos', text: 'Adrenalina dada, melhora parcial. O que fazer agora?',
+            options: [
+                { text: 'Volume IV (SF 1-2L) + Corticoide IV + Anti-histamínico + Monitorar (repetir adrenalina se piora)', points: 3, feedback: '✅ Correto! Pós-adrenalina: volume para hipotensão, corticoide para prevenir fase bifásica, anti-H1 para urticária. Observar mínimo 6-12h.' },
+                { text: 'Alta imediata com prescrição de anti-alérgico oral', points: -3, feedback: '❌ Jamais! Anafilaxia tem risco de reação bifásica (retorno dos sintomas em 4-12h). Observação mínima de 6h — idealmente 12-24h.' },
+                { text: 'Apenas anti-histamínico e observar', points: 0, feedback: '⚠️ Anti-histamínico ajuda na urticária, mas sem volume + corticoide + plano de repetir adrenalina, o paciente está subprotegido.' },
+                { text: 'Intubação imediata (profilática)', points: -1, feedback: '⚠️ Estridor está melhorando — não há indicação de IOT profilática agora. Só se piorar ou não responder à 2ª dose de adrenalina.' }
+            ]
+        },
+        { type: 'choice', title: '📋 Orientação de Alta', text: 'Paciente estável após 12h de observação. O que orientar na alta?',
+            options: [
+                { text: 'Prescrever caneta de adrenalina autoinjetável + encaminhar alergista + orientar evitar camarão', points: 3, feedback: '✅ Perfeito! Toda anafilaxia requer: (1) caneta de epinefrina para emergência, (2) encaminhamento ao alergista, (3) identificação e evitação do gatilho, (4) plano de ação escrito.' },
+                { text: 'Apenas evitar camarão, sem medicamento', points: 0, feedback: '⚠️ Evitar o alérgeno é crucial, mas exposição acidental acontece. Sem adrenalina autoinjetável, o próximo episódio pode ser fatal.' },
+                { text: 'Nenhuma orientação — cura total', points: -2, feedback: '❌ Alergia com anafilaxia é para a vida toda. Sem plano de emergência, mortalidade no próximo episódio é elevada.' },
+                { text: 'Prescrever corticoide de uso contínuo', points: -1, feedback: '❌ Corticoide crônico NÃO previne anafilaxia e tem efeitos colaterais graves. O correto é adrenalina autoinjetável + evitação.' }
+            ]
+        },
+        { type: 'info', title: '✅ Desfecho', text: '🎉 Paciente recebe alta com caneta de epinefrina autoinjetável + placa de identificação de alergia + encaminhamento ao alergista. Orientado sobre reação cruzada com crustáceos. Família treinada para uso da caneta.' }
+    ]
+},
+// === CASO 6: AVC ISQUÊMICO ===
+{
+    id: 'avc_plantao',
+    title: 'Idoso com Boca Torta e Braço Fraco',
+    difficulty: 'Avançado',
+    specialty: 'Neurologia / Emergência',
+    icon: '🧠',
+    initialVitals: { fc: 88, pas: 185, pad: 100, spo2: 96, fr: 18, temp: 36.6 },
+    steps: [
+        { type: 'info', title: '📋 Chamado', text: 'Segunda, 9h15. Esposa liga desesperada: "Meu marido acordou normal, mas às 8h30 ficou com a boca torta e não levanta o braço esquerdo." Homem 68 anos, hipertenso, diabético, FA conhecida mas não usa anticoagulante ("esquece").' },
+        { type: 'choice', title: '⏱️ Informação Crítica', text: 'Paciente chega às 9h30. Qual é a pergunta MAIS IMPORTANTE para definir conduta?',
+            options: [
+                { text: 'Que horas exatamente começaram os sintomas? (delta T)', points: 3, feedback: '✅ Essencial! O "time zero" (início dos sintomas) define se o paciente é candidato a trombólise (até 4,5h) ou trombectomia (até 24h em casos selecionados). Neste caso: 8h30 → delta T = 1h.' },
+                { text: 'Qual remédio de pressão toma?', points: 0, feedback: '⚠️ Importante para histórico, mas NÃO define a conduta imediata. O tempo desde o início é a informação-chave.' },
+                { text: 'Já teve AVC antes?', points: 1, feedback: '⚠️ Relevante, mas não muda a urgência agora. Time is brain — defina o delta T primeiro.' },
+                { text: 'Tem plano de saúde?', points: -2, feedback: '❌ Irrelevante na emergência. O atendimento é prioridade absoluta independente de plano.' }
+            ]
+        },
+        { type: 'info', title: '📊 Exame Neurológico Rápido', text: 'NIHSS: 14 pontos (AVC moderado-grave)\n• Desvio do olhar para direita\n• Hemianopsia esquerda\n• Paralisia facial esquerda\n• Hemiplegia esquerda (MSD força 0)\n• Hemihipoestesia esquerda\n• Disartria\n\nDelta T: 1 hora (dentro da janela!)' },
+        { type: 'choice', title: '🔬 Exame URGENTE', text: 'Qual exame é OBRIGATÓRIO antes de decidir trombólise?',
+            options: [
+                { text: 'TC de crânio SEM contraste (excluir hemorragia)', points: 3, feedback: '✅ Correto! TC sem contraste em < 25 min da chegada. Objetivo: excluir hemorragia. Se não há sangramento → candidato a trombólise. Não precisa esperar resultado de lab para fazer TC.' },
+                { text: 'RM de crânio com difusão', points: 1, feedback: '⚠️ RM é mais sensível para AVC isquêmico, mas DEMORA MAIS e não está disponível 24h em todos os hospitais. TC é mais rápida e suficiente para excluir hemorragia.' },
+                { text: 'Angiografia cerebral', points: 0, feedback: '⚠️ Angiografia (AngioTC) é útil para trombectomia, mas primeiro precisa da TC simples para excluir sangramento. Pode ser feita junto.' },
+                { text: 'Eletroencefalograma', points: -2, feedback: '❌ EEG não tem papel no AVC agudo. TC de crânio é o exame-chave.' }
+            ]
+        },
+        { type: 'info', title: '📈 TC de Crânio', text: '✅ TC sem contraste: NÃO mostra hemorragia. Hipodensidade sutil em território de ACM direita (isquemia hiperaguda).\n\nGlicemia: 145 mg/dL | INR: 1,1 | Plaquetas: 195.000\n\nPaciente ELEGÍVEL para trombólise IV! (< 4,5h, sem contraindicações)' },
+        { type: 'choice', title: '💊 Trombólise', text: 'TC sem sangramento, dentro da janela (1h), sem contraindicações. Qual trombolítico e qual a meta de tempo porta-agulha?',
+            options: [
+                { text: 'Alteplase (rtPA) 0,9mg/kg IV — meta porta-agulha < 60 min (ideal < 45 min)', points: 3, feedback: '✅ Correto! Alteplase 0,9mg/kg (máx 90mg): 10% em bolus + 90% em 1 hora. Meta: porta-agulha < 60 min. Cada 15 min de atraso = pior prognóstico.' },
+                { text: 'Heparina IV em dose plena', points: -2, feedback: '❌ Heparina NÃO é trombolítico e é CONTRAINDICADA nas primeiras 24h pós-trombólise (risco de hemorragia). Alteplase é o correto.' },
+                { text: 'AAS 300mg + Clopidogrel 300mg', points: -1, feedback: '❌ Antiagregantes são contraindicados nas primeiras 24h pós-trombólise. E não substituem a trombólise em AVC agudo com janela aberta.' },
+                { text: 'Tenecteplase 0,25mg/kg IV em bolus único', points: 2, feedback: '⚠️ Tenecteplase está sendo estudada para AVC e mostra resultados promissores (especialmente pré-trombectomia), mas alteplase ainda é o padrão aprovado na maioria dos guidelines.' }
+            ]
+        },
+        { type: 'choice', title: '📊 Controle de PA', text: 'PA antes da trombólise: 185/100. Qual a conduta pressórica?',
+            options: [
+                { text: 'Baixar PA para < 185/110 ANTES da trombólise (labetalol ou nicardipina IV)', points: 3, feedback: '✅ Correto! PA deve estar < 185/110 para iniciar trombólise e < 180/105 nas 24h seguintes. Labetalol 10-20mg IV ou Nicardipina em bomba.' },
+                { text: 'Não mexer na pressão — é hipertensão permissiva', points: -1, feedback: '❌ Hipertensão permissiva (até 220/120) é para quem NÃO recebe trombólise. Se vai trombolisar, PA deve estar < 185/110 para reduzir risco de hemorragia.' },
+                { text: 'Nitroprussiato de sódio em bomba (baixar agressivamente para 120/80)', points: -2, feedback: '❌ Queda agressiva da PA no AVC agudo piora a isquemia (reduz perfusão da penumbra). Meta é < 185/110, não normalizar.' },
+                { text: 'Captopril 25mg sublingual', points: -1, feedback: '❌ Sublingual tem absorção errática. Na emergência hipertensiva pré-trombólise, usar IV (labetalol, nicardipina) para controle preciso.' }
+            ]
+        },
+        { type: 'info', title: '✅ Desfecho', text: '🎉 Trombólise com alteplase administrada em 52 min (porta-agulha). PA controlada com labetalol. Após 1h: paciente já movimenta MSD parcialmente. NIHSS caiu de 14 → 6. Internado em U-AVC. 24h: TC controle sem hemorragia. Iniciado AAS + anticoagulação para FA. Alta em 7 dias com NIHSS 2 (sequela mínima).' }
+    ]
+},
+// === CASO 7: PNEUMOTÓRAX HIPERTENSIVO ===
+{
+    id: 'pneumotorax_plantao',
+    title: 'Trauma Torácico com Choque',
+    difficulty: 'Avançado',
+    specialty: 'Cirurgia / Emergência',
+    icon: '🫁',
+    initialVitals: { fc: 135, pas: 75, pad: 40, spo2: 82, fr: 32, temp: 36.2 },
+    steps: [
+        { type: 'info', title: '📋 Chamado', text: 'Sábado, 22h. SAMU traz motociclista de 28 anos, colisão com poste. Capacete fragmentado. Consciente mas muito agitado e cianótico. Respiração laboriosa. Taquicárdico. Enfisema subcutâneo palpável à direita.' },
+        { type: 'choice', title: '🩺 ABCDE — Via Aérea e Respiração', text: 'Paciente cianótico, SpO2 82%, traqueia DESVIADA para esquerda, murmúrio vesicular ABOLIDO à direita, turgência jugular bilateral. Diagnóstico?',
+            options: [
+                { text: 'Pneumotórax hipertensivo à direita', points: 3, feedback: '✅ Correto! Tríade clássica: hipotensão + turgência jugular + MV abolido unilateral + traqueia desviada contralateral = pneumotórax hipertensivo. Diagnóstico CLÍNICO — não esperar Rx!' },
+                { text: 'Hemotórax maciço', points: 1, feedback: '⚠️ Hemotórax causa MV abolido e hipotensão, mas não causa turgência jugular nem desvio de traqueia (exceto se muito grande). O quadro é mais compatível com pneumotórax hipertensivo.' },
+                { text: 'Tamponamento cardíaco', points: 0, feedback: '⚠️ Tamponamento causa hipotensão + turgência, mas NÃO causa MV abolido unilateral nem desvio de traqueia. Além disso, enfisema subcutâneo = ar no tórax.' },
+                { text: 'Pneumonia bilateral', points: -2, feedback: '❌ Pneumonia não causa este quadro agudo pós-trauma. O contexto é traumático com sinais claros de ar sob pressão no tórax.' }
+            ]
+        },
+        { type: 'choice', title: '⚡ Conduta IMEDIATA', text: 'Pneumotórax hipertensivo diagnosticado clinicamente. O que fazer AGORA?',
+            options: [
+                { text: 'Descompressão com agulha no 2º EIC linha hemiclavicular direita → seguida de drenagem torácica', points: 3, feedback: '✅ CORRETO! Punção descompressiva IMEDIATA (agulha 14G no 2º EIC) — ouvir o ar escapar. É tratamento de EMERGÊNCIA. Depois: drenagem torácica em selo d\'água (5º EIC linha axilar média).' },
+                { text: 'Pedir Rx de tórax para confirmar antes de agir', points: -3, feedback: '❌ NUNCA esperar Rx no pneumotórax hipertensivo! Paciente pode parar em minutos. O diagnóstico é CLÍNICO e o tratamento é IMEDIATO.' },
+                { text: 'Intubação + ventilação com pressão positiva', points: -2, feedback: '❌ Ventilar com pressão positiva SEM descomprimir = MATA o paciente (aumenta o pneumotórax). Descomprimir PRIMEIRO, depois intubar se necessário.' },
+                { text: 'Volume IV e vasopressores', points: -1, feedback: '❌ Hipotensão aqui é MECÂNICA (ar comprimindo o coração). Volume não resolve. Descomprimir o tórax resolve a hemodinâmica.' }
+            ]
+        },
+        { type: 'info', title: '📊 Pós-descompressão', text: 'Após punção no 2º EIC: jato de ar audível!\nPA: 100/65 (subindo!) | FC: 110 (descendo) | SpO2: 92% (melhorando)\nTraqueia retornando à linha média.\n\nDrenagem torácica em selo d\'água inserida no 5º EIC. Débito: ar contínuo + 200mL de sangue.' },
+        { type: 'choice', title: '🔍 Avaliação Secundária', text: 'Tórax estabilizado. No exame secundário: paciente confuso (Glasgow 13), pupilas isocóricas, otorragia à direita, escoriações em face. O que mais investigar?',
+            options: [
+                { text: 'TC de crânio (TCE associado — capacete fragmentado + confusão + otorragia)', points: 3, feedback: '✅ Correto! Capacete fragmentado + confusão + otorragia (sangue no ouvido) = fratura de base de crânio até prova contrária. TC de crânio obrigatória.' },
+                { text: 'Apenas observar — já está melhor', points: -2, feedback: '❌ Trauma de alta energia com confusão e otorragia sugere TCE. Sem TC, pode perder hemorragia intracraniana.' },
+                { text: 'Rx de coluna cervical apenas', points: 1, feedback: '⚠️ Rx cervical é importante em politrauma, mas a prioridade com confusão + otorragia é TC de crânio (pode incluir cervical no mesmo corte).' },
+                { text: 'Alta após drenagem estável', points: -3, feedback: '❌ Paciente politraumatizado com dreno torácico + TCE provável = internação em centro de trauma. Alta é inconcebível.' }
+            ]
+        },
+        { type: 'info', title: '✅ Desfecho', text: '🎉 TC crânio: fratura de osso temporal + pequeno hematoma epidural que não requer cirurgia (observação). Dreno torácico retirado em 3 dias. Alta em 7 dias sem sequelas. Encaminhado para reabilitação.' }
+    ]
+},
+// === CASO 8: CRISE ASMÁTICA GRAVE ===
+{
+    id: 'asma_plantao',
+    title: 'Criança de 8 Anos com Chiado e Cianose',
+    difficulty: 'Intermediário',
+    specialty: 'Pediatria / Emergência',
+    icon: '👶',
+    initialVitals: { fc: 145, pas: 95, pad: 55, spo2: 86, fr: 40, temp: 36.9 },
+    steps: [
+        { type: 'info', title: '📋 Chamado', text: 'Quarta, 20h. Mãe traz criança de 8 anos, asmática conhecida, com crise há 3 horas. Usou bombinha em casa "várias vezes" sem melhora. A criança está sentada, inclinada para frente, usando musculatura acessória. Lábios discretamente arroxeados.' },
+        { type: 'choice', title: '🩺 Classificação da Crise', text: 'SpO2 86%, FR 40, retração intercostal, fala palavras isoladas (não frases), cianose. Qual a classificação?',
+            options: [
+                { text: 'Crise asmática GRAVE / Quase fatal (near-fatal)', points: 3, feedback: '✅ Correto! SpO2 < 90% + fala apenas palavras + cianose + uso de acessória = crise grave/quase fatal. Classificação que muda completamente a conduta.' },
+                { text: 'Crise leve — apenas bombinha e observação', points: -3, feedback: '❌ Perigosíssimo! SpO2 86% com cianose é gravíssimo. "Crise leve" seria SpO2 > 95%, fala frases normais, sem tiragem.' },
+                { text: 'Crise moderada — nebulização e alta', points: -2, feedback: '❌ Moderada seria SpO2 90-95% com fala parcial. Esta criança tem SpO2 86% e cianose — é grave, risco de IOT.' },
+                { text: 'Não é asma — é engasgo', points: -2, feedback: '❌ Criança asmática conhecida + chiado + crise progressiva = asma. Engasgo seria súbito, sem história prévia.' }
+            ]
+        },
+        { type: 'choice', title: '💊 Tratamento Imediato', text: 'Crise grave. Qual a combinação de tratamentos da PRIMEIRA HORA?',
+            options: [
+                { text: 'O2 alto fluxo + Salbutamol nebulização contínua (ou 4-8 puffs a cada 20min) + Ipratrópio + Corticoide sistêmico IV', points: 3, feedback: '✅ Correto! Na crise grave: O2 (alvo SpO2 > 94%), beta-2 agonista dose alta (salbutamol nebulização ou puffs repetidos), ipratrópio associado, e corticoide sistêmico (metilprednisolona IV ou prednisolona VO) na primeira hora.' },
+                { text: 'Apenas bombinha com espaçador 2 puffs e observar', points: -2, feedback: '❌ 2 puffs é dose para crise LEVE. Na crise grave: dose alta repetida (4-8 puffs a cada 20 min ou nebulização contínua) + múltiplos medicamentos.' },
+                { text: 'Antibiótico IV (pode ser pneumonia)', points: -1, feedback: '❌ Sem febre e com história clara de asma, antibiótico não é prioridade. Broncoespasmo requer broncodilatador, não ATB.' },
+                { text: 'Intubação imediata', points: 0, feedback: '⚠️ IOT pode ser necessária SE não responder ao tratamento máximo. Mas primeiro tenta-se o tratamento medicamentoso intensivo. IOT em asmático é arriscada (hiperinsuflação).' }
+            ]
+        },
+        { type: 'choice', title: '⚡ Sem Melhora (30 min depois)', text: 'Após 3 nebulizações + corticoide: SpO2 89%, criança exausta, "tórax silencioso" (sibilos sumiram). O que significa e o que fazer?',
+            options: [
+                { text: 'Tórax silencioso = GRAVÍSSIMO (sem fluxo aéreo). Sulfato de Magnésio IV + preparar IOT', points: 3, feedback: '✅ Correto! "Tórax silencioso" não é melhora — é obstrução tão severa que não há fluxo para gerar sibilo. MgSO4 25-50mg/kg IV em 20 min. Se não melhorar: IOT + VM + cetamina.' },
+                { text: 'Sibilos sumiram = melhorou! Reduzir tratamento.', points: -3, feedback: '❌ ERRO FATAL! Desaparecimento de sibilos em paciente ainda dispneico = broncoespasmo tão grave que não passa ar. É o estágio pré-PCR.' },
+                { text: 'Trocar para aminofilina IV', points: 1, feedback: '⚠️ Aminofilina é alternativa em casos refratários, mas MgSO4 é preferido (menos efeitos adversos). Pode ser tentado se MgSO4 falhar.' },
+                { text: 'Alta com corticoide oral — vai melhorar em casa', points: -3, feedback: '❌ Gravíssimo! Criança em insuficiência respiratória com tórax silencioso receber alta = óbito provável. Necessita IOT se não melhorar.' }
+            ]
+        },
+        { type: 'info', title: '✅ Desfecho', text: '🎉 MgSO4 IV administrado. Após 20 min: sibilos retornam (bom sinal — tem fluxo!), SpO2 sobe para 93%. Mantida nebulização contínua em UTI pediátrica. Em 12h: SpO2 97% em ar ambiente. Alta em 3 dias com plano de manejo da asma + espaçador + consulta pneumopediátrica agendada.' }
+    ]
 }
 ];
 
