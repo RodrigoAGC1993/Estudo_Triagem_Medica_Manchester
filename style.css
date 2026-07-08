@@ -2054,8 +2054,8 @@ header small a:hover {
 .nv-stat { text-align: center; }
 .nv-stat-number { font-size: 1.5rem; font-weight: 800; color: var(--primary-color); }
 .nv-stat-label { font-size: 0.8rem; color: var(--text-color-light); }
-.nv-progress-bar { height: 6px; background: #d4e8f7; border-radius: 3px; overflow: hidden; }
-.nv-progress-fill { height: 100%; background: var(--primary-color); border-radius: 3px; transition: width 0.5s; }
+.nv-progress-bar { height: 8px; background: #d4e8f7; border-radius: 4px; overflow: hidden; }
+.nv-progress-fill { height: 100%; background: var(--primary-color); border-radius: 4px; transition: width 0.5s; min-width: 2%; }
 
 /* Novela do Dia */
 .nv-daily { margin-bottom: 1.5rem; }

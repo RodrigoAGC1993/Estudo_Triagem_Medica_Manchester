@@ -3,7 +3,10 @@
  * Estilo "Visual Novel / Choose Your Own Adventure"
  * Cada decisão ramifica a história para caminhos diferentes
  */
-document.addEventListener('DOMContentLoaded', function() { initNovela(); });
+document.addEventListener('DOMContentLoaded', function() {
+    // Delay to ensure novelas-extra.js is loaded
+    setTimeout(initNovela, 100);
+});
 
 // ============================================================
 // CASO 1: DOR TORÁCICA — ÁRVORE DE DECISÕES
