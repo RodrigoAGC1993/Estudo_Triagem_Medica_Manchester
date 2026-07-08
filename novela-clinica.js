@@ -15,6 +15,7 @@ const novelaCases = [
     icon: '💔',
     description: 'Sexta à noite. Um homem de 55 anos chega ao PS apertando o peito. Cada decisão sua muda o destino dele.',
     endings: 4,
+    specialty: 'Cardiologia / Emergência',
     nodes: {
         'start': {
             type: 'narrative',
@@ -213,6 +214,7 @@ const novelaCases = [
     icon: '🤰',
     description: 'Madrugada na maternidade. Gestante de 34 semanas convulsiona. O que você faz define duas vidas — mãe e bebê.',
     endings: 3,
+    specialty: 'Obstetrícia / Emergência',
     nodes: {
         'start': {
             type: 'narrative',
@@ -358,6 +360,7 @@ const novelaCases = [
     icon: '🟡',
     description: 'Mulher de 42 anos, professora, chega ao PS com pele amarelada, confusão mental e dor abdominal. O fígado está falhando — mas por quê?',
     endings: 3,
+    specialty: 'Hepatologia / Emergência',
     nodes: {
         'start': {
             type: 'narrative',
@@ -467,6 +470,7 @@ const novelaCases = [
     icon: '🦵',
     description: 'Rapaz de 28 anos, atlético, acorda sem conseguir mexer as pernas. Está piorando hora a hora. Você precisa agir antes que a fraqueza chegue ao diafragma.',
     endings: 3,
+    specialty: 'Neurologia / Emergência',
     nodes: {
         'start': {
             type: 'narrative',
@@ -616,28 +620,109 @@ function renderNovelaList() {
     const container = document.getElementById('novela-content');
     if (!container) return;
 
+    const endings = JSON.parse(localStorage.getItem('novela_endings') || '{}');
+    const totalCases = novelaCases.length;
+    const completedCases = Object.keys(endings).length;
+    const totalEndings = novelaCases.reduce((sum, c) => sum + (c.endings || 3), 0);
+    const unlockedEndings = Object.values(endings).reduce((sum, arr) => sum + arr.length, 0);
+
+    // Novela do dia (baseada no dia do ano)
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+    const novelaDoDia = novelaCases[dayOfYear % novelaCases.length];
+
+    // Categorias únicas
+    const categories = ['Todas', ...new Set(novelaCases.map(c => c.specialty || 'Geral').map(s => s.split('/')[0].trim()))];
+
     container.innerHTML = `
         <div class="nv-header">
-            <h2>🎭 Novela Clínica</h2>
-            <p>Cada decisão muda o destino do paciente. Múltiplos caminhos. Múltiplos desfechos. Suas escolhas têm consequências reais.</p>
-            <div class="nv-endings-info">🎬 Descubra todos os finais possíveis!</div>
+            <h2>🎭 Novelas Clínicas</h2>
+            <p>Cada decisão muda o destino do paciente. Múltiplos caminhos e desfechos. Suas escolhas têm consequências reais.</p>
         </div>
-        <div class="nv-list">
-            ${novelaCases.map(c => `
-                <div class="nv-card">
-                    <div class="nv-card-icon">${c.icon}</div>
-                    <div class="nv-card-content">
-                        <h3>${c.title}</h3>
-                        <p>${c.description}</p>
-                        <span class="nv-endings-badge">🎬 ${c.endings} finais possíveis</span>
-                    </div>
-                    <button class="nv-start-btn" data-id="${c.id}">Começar →</button>
+        
+        <!-- Progresso -->
+        <div class="nv-progress-box">
+            <div class="nv-progress-stats">
+                <div class="nv-stat">
+                    <span class="nv-stat-number">${completedCases}</span>
+                    <span class="nv-stat-label">/ ${totalCases} casos jogados</span>
                 </div>
-            `).join('')}
+                <div class="nv-stat">
+                    <span class="nv-stat-number">${unlockedEndings}</span>
+                    <span class="nv-stat-label">/ ${totalEndings} finais desbloqueados</span>
+                </div>
+            </div>
+            <div class="nv-progress-bar">
+                <div class="nv-progress-fill" style="width: ${Math.round((unlockedEndings / totalEndings) * 100)}%"></div>
+            </div>
         </div>
+
+        <!-- Novela do Dia -->
+        <div class="nv-daily">
+            <div class="nv-daily-badge">⭐ NOVELA DO DIA</div>
+            <div class="nv-daily-card">
+                <span class="nv-daily-icon">${novelaDoDia.icon}</span>
+                <div class="nv-daily-info">
+                    <h3>${novelaDoDia.title}</h3>
+                    <p>${novelaDoDia.description}</p>
+                </div>
+                <button class="nv-start-btn" data-id="${novelaDoDia.id}">Jogar →</button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="nv-filters" id="nv-filters">
+            ${categories.map(cat => `<button class="nv-filter-btn ${cat === 'Todas' ? 'active' : ''}" data-cat="${cat}">${cat}</button>`).join('')}
+        </div>
+
+        <!-- Lista -->
+        <div class="nv-list" id="nv-list-container"></div>
     `;
 
-    container.querySelectorAll('.nv-start-btn').forEach(btn => {
+    renderNovelaCards('Todas', endings);
+
+    // Filter listeners
+    container.querySelectorAll('.nv-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            container.querySelectorAll('.nv-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderNovelaCards(btn.dataset.cat, endings);
+        });
+    });
+
+    // Daily card start
+    container.querySelector('.nv-daily-card .nv-start-btn').addEventListener('click', () => startNovela(novelaDoDia.id));
+}
+
+function renderNovelaCards(category, endings) {
+    const listEl = document.getElementById('nv-list-container');
+    if (!listEl) return;
+
+    let filtered = novelaCases;
+    if (category !== 'Todas') {
+        filtered = novelaCases.filter(c => (c.specialty || 'Geral').includes(category));
+    }
+
+    listEl.innerHTML = filtered.map(c => {
+        const caseEndings = endings[c.id] || [];
+        const completed = caseEndings.length > 0;
+        const bestGrade = caseEndings.includes('excellent') ? '⭐' : caseEndings.includes('good') ? '✅' : caseEndings.includes('regular') ? '⚠️' : caseEndings.includes('death') ? '💀' : '';
+        return `
+            <div class="nv-card ${completed ? 'nv-card-completed' : ''}">
+                <div class="nv-card-icon">${c.icon}</div>
+                <div class="nv-card-content">
+                    <h3>${c.title} ${bestGrade}</h3>
+                    <p>${c.description}</p>
+                    <div class="nv-card-meta">
+                        <span class="nv-endings-badge">🎬 ${c.endings} finais</span>
+                        ${completed ? `<span class="nv-unlocked-badge">🔓 ${caseEndings.length} desbloqueado${caseEndings.length > 1 ? 's' : ''}</span>` : ''}
+                    </div>
+                </div>
+                <button class="nv-start-btn" data-id="${c.id}">${completed ? 'Rejogar →' : 'Começar →'}</button>
+            </div>
+        `;
+    }).join('');
+
+    listEl.querySelectorAll('.nv-start-btn').forEach(btn => {
         btn.addEventListener('click', () => startNovela(btn.dataset.id));
     });
 }

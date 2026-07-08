@@ -2039,3 +2039,43 @@ header small a:hover {
 [data-theme="dark"] .nv-lesson { background: rgba(0,0,0,0.3); }
 
 @media (max-width: 768px) { .nv-card { flex-direction: column; text-align: center; } .nv-start-btn { width: 100%; } .nv-vitals { flex-wrap: wrap; font-size: 0.78rem; } }
+
+/* ============================================================
+   NOVELA — PROGRESSO + FILTROS + NOVELA DO DIA
+   ============================================================ */
+.nv-progress-box {
+    background: linear-gradient(135deg, #eef6ff 0%, #f0f9ff 100%);
+    border: 1px solid #b3d9ff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 1.5rem;
+}
+.nv-progress-stats { display: flex; justify-content: center; gap: 2rem; margin-bottom: 10px; }
+.nv-stat { text-align: center; }
+.nv-stat-number { font-size: 1.5rem; font-weight: 800; color: var(--primary-color); }
+.nv-stat-label { font-size: 0.8rem; color: var(--text-color-light); }
+.nv-progress-bar { height: 6px; background: #d4e8f7; border-radius: 3px; overflow: hidden; }
+.nv-progress-fill { height: 100%; background: var(--primary-color); border-radius: 3px; transition: width 0.5s; }
+
+/* Novela do Dia */
+.nv-daily { margin-bottom: 1.5rem; }
+.nv-daily-badge { text-align: center; font-size: 0.75rem; font-weight: 700; color: #b45309; background: #fef3c7; display: inline-block; padding: 3px 12px; border-radius: 12px; margin-bottom: 8px; }
+.nv-daily-card { display: flex; align-items: center; gap: 16px; padding: 18px; border: 2px solid #fbbf24; border-radius: 12px; background: linear-gradient(135deg, #fffbeb 0%, #fef9e7 100%); }
+.nv-daily-icon { font-size: 2.2rem; }
+.nv-daily-info { flex: 1; }
+.nv-daily-info h3 { margin: 0 0 4px; font-size: 1.05rem; }
+.nv-daily-info p { margin: 0; font-size: 0.85rem; color: var(--text-color-light); }
+
+/* Filtros */
+.nv-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.5rem; justify-content: center; }
+.nv-filter-btn { padding: 6px 14px; font-size: 0.8rem; font-weight: 500; border: 1px solid var(--border-color); background: #fff; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
+.nv-filter-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+.nv-filter-btn.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+
+/* Card com status */
+.nv-card-completed { border-left: 4px solid var(--success-color); }
+.nv-card-meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+.nv-unlocked-badge { font-size: 0.72rem; background: rgba(25,135,84,0.1); color: var(--success-color); padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+
+[data-theme="dark"] .nv-progress-box { background: linear-gradient(135deg, #1e2a3a 0%, #1e2e3e 100%); border-color: #2d4a6a; }
+[data-theme="dark"] .nv-daily-card { background: linear-gradient(135deg, #2a2a1a 0%, #2e2e1e 100%); border-color: #8b6508; }
