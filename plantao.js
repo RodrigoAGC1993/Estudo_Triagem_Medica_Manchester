@@ -1,8 +1,143 @@
 /**
  * Simulador de Plantão — Casos multi-etapas com revelação progressiva
- * Inspirado no SimulaMax, sem IA — lógica de árvore de decisões
+ * Monitor de sinais vitais animado + Deterioração + Desfechos alternativos
+ * Inspirado em Body Interact e SimulaMax
  */
 document.addEventListener('DOMContentLoaded', function() { initPlantao(); });
+
+// ============================================================
+// SISTEMA DE SINAIS VITAIS DINÂMICOS
+// ============================================================
+let vitalSigns = { fc: 80, pas: 120, pad: 80, spo2: 98, fr: 16, temp: 36.5 };
+let vitalInterval = null;
+let deteriorationLevel = 0; // 0=estável, 1=alerta, 2=crítico, 3=PCR
+let deteriorationTimer = null;
+const DETERIORATION_INTERVAL = 45000; // 45s sem responder → piora
+
+function startVitalMonitor(initialVitals) {
+    vitalSigns = { ...initialVitals };
+    deteriorationLevel = 0;
+    updateVitalDisplay();
+    if (vitalInterval) clearInterval(vitalInterval);
+    vitalInterval = setInterval(() => {
+        // Leve variação natural (simulação)
+        vitalSigns.fc += Math.round((Math.random() - 0.5) * 3);
+        vitalSigns.pas += Math.round((Math.random() - 0.5) * 2);
+        vitalSigns.spo2 += Math.round((Math.random() - 0.5) * 0.5);
+        // Clampar valores
+        vitalSigns.fc = Math.max(30, Math.min(200, vitalSigns.fc));
+        vitalSigns.pas = Math.max(50, Math.min(250, vitalSigns.pas));
+        vitalSigns.spo2 = Math.max(60, Math.min(100, vitalSigns.spo2));
+        updateVitalDisplay();
+    }, 2000);
+}
+
+function stopVitalMonitor() {
+    if (vitalInterval) clearInterval(vitalInterval);
+    if (deteriorationTimer) clearTimeout(deteriorationTimer);
+}
+
+function deterioratePatient() {
+    deteriorationLevel++;
+    if (deteriorationLevel === 1) {
+        // Alerta - piora leve
+        vitalSigns.fc += 15;
+        vitalSigns.pas -= 10;
+        vitalSigns.spo2 -= 3;
+        showDeteriorationAlert('⚠️ O paciente está piorando! Seus sinais vitais estão se deteriorando.');
+    } else if (deteriorationLevel === 2) {
+        // Crítico
+        vitalSigns.fc += 25;
+        vitalSigns.pas -= 20;
+        vitalSigns.spo2 -= 8;
+        vitalSigns.fr += 8;
+        showDeteriorationAlert('🚨 CRÍTICO! O paciente está em franca deterioração! Tome uma decisão AGORA!');
+    } else if (deteriorationLevel >= 3) {
+        // PCR
+        vitalSigns.fc = 0;
+        vitalSigns.pas = 0;
+        vitalSigns.pad = 0;
+        vitalSigns.spo2 = 0;
+        showDeteriorationAlert('💀 PARADA CARDIORRESPIRATÓRIA! O paciente parou — demora excessiva na conduta.');
+        plantaoScore = Math.max(0, plantaoScore - 5);
+    }
+    updateVitalDisplay();
+}
+
+function applyDecisionToVitals(points) {
+    // Decisão boa → estabiliza; decisão ruim → piora
+    if (points >= 3) {
+        vitalSigns.fc = Math.max(60, vitalSigns.fc - 10);
+        vitalSigns.pas = Math.min(130, vitalSigns.pas + 10);
+        vitalSigns.spo2 = Math.min(99, vitalSigns.spo2 + 3);
+        if (deteriorationLevel > 0) deteriorationLevel--;
+    } else if (points <= -1) {
+        vitalSigns.fc += 10;
+        vitalSigns.pas -= 8;
+        vitalSigns.spo2 -= 2;
+        deteriorationLevel = Math.min(2, deteriorationLevel + 1);
+    }
+    updateVitalDisplay();
+}
+
+function startDeteriorationClock() {
+    if (deteriorationTimer) clearTimeout(deteriorationTimer);
+    deteriorationTimer = setTimeout(() => {
+        deterioratePatient();
+        // Se não parou, agenda próxima deterioração mais rápida
+        if (deteriorationLevel < 3) {
+            deteriorationTimer = setTimeout(() => deterioratePatient(), 30000);
+        }
+    }, DETERIORATION_INTERVAL);
+}
+
+function resetDeteriorationClock() {
+    if (deteriorationTimer) clearTimeout(deteriorationTimer);
+    startDeteriorationClock();
+}
+
+function showDeteriorationAlert(msg) {
+    const el = document.getElementById('plt-deterioration-alert');
+    if (el) {
+        el.textContent = msg;
+        el.className = `plt-deterioration-alert plt-det-${deteriorationLevel}`;
+        el.classList.remove('hidden');
+        setTimeout(() => el.classList.add('hidden'), 5000);
+    }
+}
+
+function updateVitalDisplay() {
+    const el = document.getElementById('plt-vitals-monitor');
+    if (!el) return;
+
+    const fcClass = vitalSigns.fc > 120 || vitalSigns.fc < 50 ? 'vital-danger' : vitalSigns.fc > 100 ? 'vital-warning' : 'vital-normal';
+    const paClass = vitalSigns.pas < 90 || vitalSigns.pas > 180 ? 'vital-danger' : vitalSigns.pas < 100 ? 'vital-warning' : 'vital-normal';
+    const spo2Class = vitalSigns.spo2 < 90 ? 'vital-danger' : vitalSigns.spo2 < 94 ? 'vital-warning' : 'vital-normal';
+    const frClass = vitalSigns.fr > 24 || vitalSigns.fr < 8 ? 'vital-danger' : vitalSigns.fr > 20 ? 'vital-warning' : 'vital-normal';
+
+    el.innerHTML = `
+        <div class="vital-item ${fcClass}">
+            <span class="vital-label">FC</span>
+            <span class="vital-value">${vitalSigns.fc}</span>
+            <span class="vital-unit">bpm</span>
+        </div>
+        <div class="vital-item ${paClass}">
+            <span class="vital-label">PA</span>
+            <span class="vital-value">${vitalSigns.pas}/${vitalSigns.pad}</span>
+            <span class="vital-unit">mmHg</span>
+        </div>
+        <div class="vital-item ${spo2Class}">
+            <span class="vital-label">SpO2</span>
+            <span class="vital-value">${vitalSigns.spo2}</span>
+            <span class="vital-unit">%</span>
+        </div>
+        <div class="vital-item ${frClass}">
+            <span class="vital-label">FR</span>
+            <span class="vital-value">${vitalSigns.fr}</span>
+            <span class="vital-unit">irpm</span>
+        </div>
+    `;
+}
 
 // ============================================================
 // BANCO DE CASOS DO PLANTÃO
@@ -14,6 +149,7 @@ const plantaoCases = [
     difficulty: 'Intermediário',
     specialty: 'Cardiologia / Emergência',
     icon: '💔',
+    initialVitals: { fc: 110, pas: 95, pad: 60, spo2: 93, fr: 22, temp: 36.4 },
     steps: [
         {
             type: 'info',
@@ -87,6 +223,7 @@ const plantaoCases = [
     difficulty: 'Avançado',
     specialty: 'Emergência / Infectologia',
     icon: '🦠',
+    initialVitals: { fc: 125, pas: 78, pad: 45, spo2: 90, fr: 28, temp: 39.2 },
     steps: [
         {
             type: 'info',
@@ -171,6 +308,7 @@ const plantaoCases = [
     difficulty: 'Intermediário',
     specialty: 'Pneumologia / Emergência',
     icon: '🫁',
+    initialVitals: { fc: 112, pas: 118, pad: 72, spo2: 92, fr: 24, temp: 36.8 },
     steps: [
         {
             type: 'info',
@@ -316,6 +454,10 @@ function startPlantao(caseId) {
     if (plantaoTimer) clearInterval(plantaoTimer);
     plantaoTimer = setInterval(() => { plantaoSeconds++; updateTimer(); }, 1000);
 
+    // Vital signs monitor
+    startVitalMonitor(currentPlantao.initialVitals);
+    startDeteriorationClock();
+
     renderPlantaoStep();
 }
 
@@ -341,6 +483,8 @@ function renderPlantaoStep() {
                 <span id="plt-timer">⏱️ 00:00</span>
                 <span class="plt-step-count">Etapa ${plantaoStep + 1}/${currentPlantao.steps.length}</span>
             </div>
+            <div class="plt-vitals-monitor" id="plt-vitals-monitor"></div>
+            <div id="plt-deterioration-alert" class="plt-deterioration-alert hidden"></div>
             <div class="plt-progress"><div class="plt-progress-fill" style="width:${progressPercent}%"></div></div>
             <h3 class="plt-step-title">${step.title}</h3>
     `;
@@ -370,6 +514,7 @@ function renderPlantaoStep() {
     stepHtml += '</div>';
     container.innerHTML = stepHtml;
     updateTimer();
+    updateVitalDisplay();
 
     // Event listeners for choices
     if (step.type === 'choice') {
@@ -386,6 +531,10 @@ function selectPlantaoOption(idx) {
 
     plantaoScore += Math.max(0, option.points);
     plantaoMaxScore += maxPoints;
+
+    // Aplicar consequência nos sinais vitais
+    applyDecisionToVitals(option.points);
+    resetDeteriorationClock();
 
     // Disable all buttons
     document.querySelectorAll('.plt-option-btn').forEach((btn, i) => {
@@ -406,6 +555,7 @@ function selectPlantaoOption(idx) {
 
 function nextPlantaoStep() {
     plantaoStep++;
+    resetDeteriorationClock();
     if (plantaoStep < currentPlantao.steps.length) {
         renderPlantaoStep();
     } else {
@@ -415,6 +565,7 @@ function nextPlantaoStep() {
 
 function endPlantao() {
     if (plantaoTimer) clearInterval(plantaoTimer);
+    stopVitalMonitor();
     const percent = plantaoMaxScore > 0 ? Math.round((plantaoScore / plantaoMaxScore) * 100) : 0;
 
     // Save stats
@@ -422,11 +573,24 @@ function endPlantao() {
     stats[currentPlantao.id] = { percent, time: plantaoSeconds, date: new Date().toLocaleDateString('pt-BR') };
     localStorage.setItem('plantao_stats', JSON.stringify(stats));
 
-    let grade, cls;
-    if (percent >= 85) { grade = '⭐ Excelente! Conduta de especialista.'; cls = 'grade-excellent'; }
-    else if (percent >= 60) { grade = '👍 Bom desempenho!'; cls = 'grade-good'; }
-    else if (percent >= 40) { grade = '📖 Regular — revise os protocolos.'; cls = 'grade-regular'; }
-    else { grade = '⚠️ Precisa estudar mais este tema.'; cls = 'grade-poor'; }
+    let grade, cls, outcome;
+    if (percent >= 85) {
+        grade = '⭐ Excelente! Conduta de especialista.';
+        cls = 'grade-excellent';
+        outcome = '🎉 Paciente estabilizado e encaminhado com sucesso. Boa evolução clínica.';
+    } else if (percent >= 60) {
+        grade = '👍 Bom desempenho!';
+        cls = 'grade-good';
+        outcome = '✅ Paciente sobreviveu, mas houve atraso em algumas condutas. Evolução com complicações menores.';
+    } else if (percent >= 40) {
+        grade = '📖 Regular — revise os protocolos.';
+        cls = 'grade-regular';
+        outcome = '⚠️ Paciente evoluiu com complicações significativas devido a erros na conduta. Tempo prolongado de internação.';
+    } else {
+        grade = '⚠️ Paciente evoluiu mal.';
+        cls = 'grade-poor';
+        outcome = '💀 Condutas inadequadas levaram a deterioração grave. Em cenário real, este paciente teria risco elevado de óbito.';
+    }
 
     const min = Math.floor(plantaoSeconds / 60);
     const sec = plantaoSeconds % 60;
@@ -437,6 +601,7 @@ function endPlantao() {
             <h3>${currentPlantao.icon} ${currentPlantao.title}</h3>
             <div class="plt-result-score ${cls}">${percent}%</div>
             <p class="plt-result-grade">${grade}</p>
+            <div class="plt-outcome ${cls}">${outcome}</div>
             <p class="plt-result-time">Tempo: ${min}min ${sec}s</p>
             <div class="plt-result-actions">
                 <button class="plt-retry-btn" onclick="startPlantao('${currentPlantao.id}')">↺ Refazer</button>
@@ -448,5 +613,6 @@ function endPlantao() {
 
 function quitPlantao() {
     if (plantaoTimer) clearInterval(plantaoTimer);
+    stopVitalMonitor();
     renderPlantaoList();
 }
