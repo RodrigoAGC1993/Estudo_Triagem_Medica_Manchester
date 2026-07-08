@@ -235,6 +235,380 @@ const novelaCases = [
             lesson: 'LIÇÃO: Dor torácica em homem > 50 com fatores de risco JAMAIS recebe alta sem ECG + troponina no mínimo. "Pode não ser nada" não é conduta médica — é loteria com a vida do paciente.'
         }
     }
+},
+// === NOVELA 2: A GRÁVIDA COM CONVULSÃO ===
+{
+    id: 'novela_eclampsia',
+    title: 'A Grávida que Convulsionou',
+    icon: '🤰',
+    description: 'Madrugada na maternidade. Gestante de 34 semanas convulsiona. O que você faz define duas vidas — mãe e bebê.',
+    endings: 3,
+    nodes: {
+        'start': {
+            type: 'narrative',
+            text: '🌙 Terça, 3h da madrugada. Você é o plantonista da maternidade.\n\nA enfermeira corre até você: "Doutor! A gestante do leito 4 está convulsionando!"\n\nVocê corre ao leito. Maria, 28 anos, 34 semanas de gestação, primigesta. Está em movimentos tônico-clônicos generalizados há ~1 minuto.',
+            vitals: { fc: 130, pas: 190, pad: 120, spo2: 88, fr: 8 },
+            next: 'seizure_action'
+        },
+        'seizure_action': {
+            type: 'choice',
+            text: '⚡ A paciente está convulsionando AGORA. Qual sua ação imediata?',
+            options: [
+                { text: '💉 Sulfato de Magnésio IV (4-6g em 20 min) — é eclâmpsia até prova contrária', next: 'mgso4_given', points: 3 },
+                { text: '💊 Diazepam IV 10mg para parar a convulsão', next: 'diazepam_path', points: 1 },
+                { text: '👶 Cesárea de emergência imediata (tirar o bebê agora)', next: 'immediate_csection', points: -1 },
+                { text: '📞 Ligar para o neurologista (pode ser epilepsia)', next: 'call_neuro', points: -2 }
+            ]
+        },
+        'mgso4_given': {
+            type: 'narrative',
+            text: '✅ Sulfato de Magnésio em bolus IV. Convulsão cessa em 2 minutos.\n\nVocê posiciona Maria em decúbito lateral esquerdo (descomprime a veia cava). O2 por máscara. A SpO2 sobe para 94%.\n\nPA pós-convulsão: 185/115. FC fetal: 90 bpm (bradicardia transitória — monitorar).',
+            vitals: { fc: 105, pas: 175, pad: 110, spo2: 94, fr: 18 },
+            next: 'post_seizure_mgso4'
+        },
+        'post_seizure_mgso4': {
+            type: 'choice',
+            text: 'Convulsão controlada com MgSO4. PA ainda 175/110. FC fetal recuperando (agora 120 bpm). Próximos passos?',
+            options: [
+                { text: '💊 Anti-hipertensivo (Hidralazina IV) + manter MgSO4 + planejar PARTO nas próximas horas', next: 'correct_management', points: 3 },
+                { text: '🏠 Observar 24h e dar alta se melhorar', next: 'discharge_disaster', points: -3 },
+                { text: '💉 Aumentar dose de MgSO4 para 10g (dobrar)', next: 'mgso4_overdose', points: -2 }
+            ]
+        },
+        'correct_management': {
+            type: 'narrative',
+            text: '✅ Hidralazina 5mg IV. PA caiu para 155/95 em 20 min. MgSO4 em manutenção (1-2g/h).\n\nMonitoramento: reflexo patelar presente, diurese > 25 mL/h (MgSO4 seguro).\n\nExames: proteínas 24h = 4,2g, plaquetas 98.000 (caindo), TGO 180, LDH 850.\n\n⚠️ Critérios de HELLP parcial! Resolução da gestação indicada.',
+            vitals: { fc: 88, pas: 148, pad: 92, spo2: 97, fr: 16 },
+            next: 'delivery_decision'
+        },
+        'delivery_decision': {
+            type: 'choice',
+            text: 'Eclâmpsia + HELLP parcial + 34 semanas. O parto é o tratamento definitivo. Qual via?',
+            options: [
+                { text: '🏥 Cesárea assim que estabilizar (não esperar trabalho de parto)', next: 'ending_best_eclampsia', points: 3 },
+                { text: '⏳ Indução de parto normal com ocitocina', next: 'ending_ok_eclampsia', points: 1 }
+            ]
+        },
+        'ending_best_eclampsia': {
+            type: 'ending',
+            title: '⭐ MELHOR DESFECHO — Mãe e Bebê Salvos',
+            text: 'Cesárea sob anestesia geral (contraindicado raquianestesia com plaquetas < 100.000). Bebê nasce com 2,1 kg, Apgar 6/8.\n\nRN vai para UTI neonatal — evolui bem, alta em 12 dias.\n\nMaria na UTI materna 48h. MgSO4 mantido por 24h pós-parto. Plaquetas normalizam em 5 dias. Alta em 7 dias.\n\nDecisão rápida e acertada salvou duas vidas.',
+            grade: 'excellent',
+            lesson: 'LIÇÃO: Eclâmpsia = MgSO4 primeiro (não diazepam). Tratamento definitivo = parto. HELLP com plaquetas < 100.000 = cesárea + cuidado com anestesia. MgSO4 mantém 24-48h pós-parto.'
+        },
+        'ending_ok_eclampsia': {
+            type: 'ending',
+            title: '✅ DESFECHO BOM — Com Complicações Menores',
+            text: 'Indução com ocitocina. Trabalho de parto demorou 14 horas. Nesse período, plaquetas caíram para 65.000.\n\nParto vaginal eventualmente — bebê nasce com Apgar 5/7 (reanimação necessária).\n\nMaria teve sangramento pós-parto (atonia + plaquetopenia) — transfusão de 2 concentrados de hemácias + plaquetas.\n\nAmbos sobrevivem, mas com internação prolongada.',
+            grade: 'good',
+            lesson: 'LIÇÃO: Na HELLP com plaquetas caindo, indução pode ser arriscada (sangramento). Cesárea tende a ser mais segura e controlada. Cada hora com HELLP ativa piora o prognóstico.'
+        },
+        'diazepam_path': {
+            type: 'narrative',
+            text: '💊 Diazepam 10mg IV. Convulsão para... mas volta em 5 minutos (recorrente).\n\nDiazepam não trata a causa (eclâmpsia). Apenas sedação temporária.\n\nA enfermeira experiente sugere: "Doutor, não seria melhor Sulfato de Magnésio?"',
+            vitals: { fc: 120, pas: 185, pad: 115, spo2: 90, fr: 14 },
+            next: 'diazepam_choice'
+        },
+        'diazepam_choice': {
+            type: 'choice',
+            text: 'Convulsão recorrente apesar do diazepam. O que fazer?',
+            options: [
+                { text: '✅ Iniciar MgSO4 agora (deveria ter sido o primeiro)', next: 'late_mgso4', points: 2 },
+                { text: '💊 Mais diazepam + fenitoína', next: 'ending_poor_eclampsia', points: -2 }
+            ]
+        },
+        'late_mgso4': {
+            type: 'narrative',
+            text: 'MgSO4 iniciado (com atraso de 10 min). Convulsões cessam.\n\nMas o atraso causou hipóxia fetal: FC fetal caiu para 70 bpm por 5 min. Desaceleração prolongada.',
+            vitals: { fc: 100, pas: 170, pad: 105, spo2: 93, fr: 18 },
+            next: 'delivery_decision'
+        },
+        'ending_poor_eclampsia': {
+            type: 'ending',
+            title: '⚠️ DESFECHO RUIM — Sequelas Neonatais',
+            text: 'Diazepam repetido + Fenitoína: convulsões controladas eventualmente, mas 15 min de atividade convulsiva total.\n\nDesaceleração fetal prolongada → cesárea de emergência.\n\nBebê nasce em asfixia (Apgar 2/4). Encefalopatia hipóxico-isquêmica. Hipotermia terapêutica.\n\nMaria sobrevive, mas o bebê terá sequelas neurológicas permanentes.',
+            grade: 'poor',
+            lesson: 'LIÇÃO: Na eclâmpsia, MgSO4 é SEMPRE primeira linha — não diazepam ou fenitoína. BZDs deprimem o feto e não previnem recorrência. MgSO4 tanto trata quanto previne novas crises.'
+        },
+        'immediate_csection': {
+            type: 'ending',
+            title: '⚠️ DESFECHO REGULAR — Pressa sem Estabilização',
+            text: 'Cesárea imediata durante a convulsão. Extremamente arriscado:\n\n- Intubação difícil (paciente convulsionando + edema de via aérea na eclâmpsia)\n- Sangramento intraoperatório importante (sem controle pressórico)\n- Bebê nasce deprimido (Apgar 3/5) — reanimação prolongada\n\nAmbos sobrevivem, mas com complicações evitáveis. A mãe vai para UTI por 5 dias.',
+            grade: 'regular',
+            lesson: 'LIÇÃO: Eclâmpsia → PRIMEIRO estabilizar a mãe (MgSO4 + anti-hipertensivo) → DEPOIS parto. Operar durante convulsão ativa é perigoso para mãe e bebê. 15-20 min para estabilizar não prejudicam o feto na maioria dos casos.'
+        },
+        'call_neuro': {
+            type: 'narrative',
+            text: '📞 Você liga para o neurologista. Demora 25 min para atender.\n\nEnquanto espera, a paciente tem SEGUNDA convulsão. PA: 200/125. FC fetal: 60 bpm.\n\nA enfermeira, por conta própria, pede que o anestesista venha.',
+            vitals: { fc: 140, pas: 200, pad: 125, spo2: 82, fr: 6 },
+            next: 'neuro_disaster'
+        },
+        'neuro_disaster': {
+            type: 'choice',
+            text: '🚨 Paciente em status epilepticus eclâmptico. FC fetal 60 (sofrimento grave). O que fazer?',
+            options: [
+                { text: 'MgSO4 AGORA + cesárea de emergência após controle', next: 'ending_ok_eclampsia', points: 2 },
+                { text: 'Continuar esperando o neurologista', next: 'ending_death_eclampsia', points: -5 }
+            ]
+        },
+        'ending_death_eclampsia': {
+            type: 'ending',
+            title: '💀 DESFECHO CATASTRÓFICO — Óbito Fetal + Mãe em UTI',
+            text: 'Neurologista chegou após 30 min. Nesse tempo: status eclâmptico prolongado.\n\nBCF inaudível — óbito fetal intrauterino.\n\nMaria evolui com coagulação intravascular disseminada (CIVD) + insuficiência renal aguda + edema cerebral.\n\nSobrevive após 15 dias de UTI com diálise. Bebê perdido.\n\nUma tragédia que MgSO4 nos primeiros minutos teria evitado.',
+            grade: 'death',
+            lesson: 'LIÇÃO: Eclâmpsia é diagnóstico OBSTÉTRICO, não neurológico. O plantonista da maternidade DEVE saber tratá-la sozinho. Esperar especialista em emergência obstétrica = morte. MgSO4 está na mão de todo obstetra.'
+        },
+        'discharge_disaster': {
+            type: 'ending',
+            title: '💀 ÓBITO — Alta Após Eclâmpsia',
+            text: 'Você deu alta após "melhora" da convulsão. Maria voltou para casa.\n\n6 horas depois: nova convulsão em casa → queda → TCE + nova crise eclâmptica.\n\nSAMU encontra paciente em PCR. Cesárea perimortem no hospital. Bebê não sobrevive.\n\nMaria sobrevive com sequela neurológica grave (hemorragia intracraniana).\n\nProcesso criminal por negligência.',
+            grade: 'death',
+            lesson: 'LIÇÃO: NUNCA dar alta após eclâmpsia. A paciente precisa de MgSO4 por 24-48h PÓS-PARTO + monitoramento em UTI. Eclâmpsia pode recorrer até 48h após o parto.'
+        },
+        'mgso4_overdose': {
+            type: 'ending',
+            title: '⚠️ DESFECHO RUIM — Intoxicação por Magnésio',
+            text: 'MgSO4 em dose excessiva (10g bolus) → intoxicação:\n\n- Reflexos patelares abolidos (primeiro sinal!)\n- Depressão respiratória (FR 6)\n- Hipotensão\n\nAntídoto: Gluconato de Cálcio 1g IV. Respiração retorna.\n\nMas durante a apneia, hipóxia fetal → cesárea de emergência. Bebê com Apgar baixo.\n\nAmbos sobrevivem com sequelas evitáveis.',
+            grade: 'regular',
+            lesson: 'LIÇÃO: MgSO4 dose correta: 4-6g bolus em 20min, manutenção 1-2g/h. Monitorar: reflexo patelar, FR > 12, diurese > 25mL/h. Se intoxicação: Gluconato de Cálcio é o antídoto. Dose excessiva mata por parada respiratória.'
+        }
+    }
+},
+// === NOVELA 3: A ICTERÍCIA MISTERIOSA ===
+{
+    id: 'novela_ictericia',
+    title: 'A Professora que Ficou Amarela',
+    icon: '🟡',
+    description: 'Mulher de 42 anos, professora, chega ao PS com pele amarelada, confusão mental e dor abdominal. O fígado está falhando — mas por quê?',
+    endings: 3,
+    nodes: {
+        'start': {
+            type: 'narrative',
+            text: '🏥 Segunda-feira, 15h. Pronto-socorro.\n\nCarla, 42 anos, professora de história. O marido a trouxe porque ela está "amarela e estranha" há 2 dias.\n\nEle conta: "Ela começou com dor na barriga, depois ficou amarela e hoje não está fazendo sentido no que fala."\n\nAo exame: icterícia ++++, confusa (Glasgow 13), abdome tenso em HCD, fígado não palpável.',
+            vitals: { fc: 95, pas: 108, pad: 68, spo2: 97, fr: 18 },
+            next: 'initial_workup'
+        },
+        'initial_workup': {
+            type: 'choice',
+            text: 'Icterícia aguda + encefalopatia + mulher jovem. Qual é seu raciocínio diagnóstico principal?',
+            options: [
+                { text: '🔬 Insuficiência Hepática Aguda (hepatite fulminante?) — pedir INR, transaminases, bilirrubinas URGENTE', next: 'liver_failure_path', points: 3 },
+                { text: '🪨 Cálculo biliar com colangite (Charcot?) — pedir USG de vias biliares', next: 'biliary_path', points: 1 },
+                { text: '🩸 Hemólise aguda — pedir hemograma + reticulócitos', next: 'hemolysis_path', points: 0 },
+                { text: '🫘 Problema renal — pedir função renal', next: 'renal_wrong', points: -1 }
+            ]
+        },
+        'liver_failure_path': {
+            type: 'narrative',
+            text: '🔬 Resultados em 1 hora:\n\n⚠️ INR: 4,8 (muito alargado!)\nTGO: 3.500 | TGP: 4.200 (transaminases muito elevadas)\nBilirrubina total: 18 mg/dL\nAlbumina: 2,8\nAmônia: 180 (elevada — explica a confusão)\n\nCritérios de Insuficiência Hepática Aguda: icterícia + coagulopatia (INR > 1,5) + encefalopatia em paciente SEM doença hepática prévia.',
+            vitals: { fc: 92, pas: 105, pad: 65, spo2: 97, fr: 18 },
+            next: 'cause_investigation'
+        },
+        'cause_investigation': {
+            type: 'choice',
+            text: 'Insuficiência hepática aguda confirmada. Precisa descobrir a CAUSA para tratar. O que investigar?',
+            options: [
+                { text: '💊 Perguntar sobre medicamentos/chás + dosar paracetamol sérico', next: 'paracetamol_found', points: 3 },
+                { text: '🦠 Sorologias virais (hepatite A, B, C, E, CMV, EBV)', next: 'viral_negative', points: 2 },
+                { text: '🫁 TC de tórax (pode ser câncer com metástase hepática)', next: 'wrong_ct', points: -1 }
+            ]
+        },
+        'paracetamol_found': {
+            type: 'narrative',
+            text: '💊 Você pergunta sobre medicamentos. O marido lembra:\n\n"Ela teve dor de dente forte na semana passada. Tomou bastante daquele remédio de dor... Tylenol, acho. Disse que tomava de 4 em 4 horas..."\n\nVocê calcula: provavelmente > 10g/dia por 5 dias.\n\n🔬 Paracetamol sérico: 180 mcg/mL (TÓXICO!)\nNomograma de Rumack-Matthew: ZONA DE RISCO.',
+            vitals: { fc: 88, pas: 102, pad: 62, spo2: 97, fr: 16 },
+            next: 'nac_decision'
+        },
+        'nac_decision': {
+            type: 'choice',
+            text: 'Causa: hepatotoxicidade por paracetamol (acetaminofeno). Antídoto?',
+            options: [
+                { text: '💉 N-Acetilcisteína (NAC) IV protocolo de 21h + contato com centro de transplante', next: 'ending_best_liver', points: 3 },
+                { text: '🩸 Plasmaférese de urgência', next: 'ending_ok_liver', points: 1 },
+                { text: '⏳ Apenas observar — o fígado regenera sozinho', next: 'ending_death_liver', points: -3 }
+            ]
+        },
+        'ending_best_liver': {
+            type: 'ending',
+            title: '⭐ MELHOR DESFECHO — Fígado Salvo',
+            text: 'NAC IV iniciada imediatamente (150mg/kg em 1h → 50mg/kg em 4h → 100mg/kg em 16h).\n\nEm 48h: INR começa a cair (3,2 → 2,1 → 1,5). Transaminases em queda. Encefalopatia resolvendo.\n\nCarla recupera consciência no 3º dia. "O que aconteceu, doutor?"\n\nAlta em 10 dias com fígado recuperado. Orientação: NUNCA paracetamol > 4g/dia. Seguimento com hepatologista.',
+            grade: 'excellent',
+            lesson: 'LIÇÃO: Paracetamol é a causa Nº1 de insuficiência hepática aguda no mundo. Dose tóxica: > 7,5-10g/dia. NAC é o antídoto e funciona mesmo após 24h do início dos sintomas (benefício comprovado). Sempre perguntar sobre medicamentos em icterícia aguda!'
+        },
+        'ending_ok_liver': {
+            type: 'ending',
+            title: '✅ DESFECHO BOM — Mas Poderia Ser Mais Simples',
+            text: 'Plasmaférese melhora o INR temporariamente, mas não trata a causa.\n\nApós insistência do hepatologista, NAC é iniciada (com 12h de atraso).\n\nCarla piora antes de melhorar — Glasgow cai para 10 — quase indicou transplante.\n\nRecupera em 14 dias. Processo mais longo e arriscado que o necessário.',
+            grade: 'good',
+            lesson: 'LIÇÃO: Na intoxicação por paracetamol, NAC é o antídoto ESPECÍFICO. Plasmaférese trata consequência (INR alto) mas não a causa. NAC precoce = recuperação mais rápida e menor risco de transplante.'
+        },
+        'ending_death_liver': {
+            type: 'ending',
+            title: '💀 ÓBITO — Fígado Não Regenera sem Tratamento',
+            text: 'Sem NAC, a hepatotoxicidade progride inexoravelmente.\n\n48h: INR 8,5 | Glasgow 6 | Amônia 350.\n72h: Falência multiorgânica. Edema cerebral.\n\nCarla entra em coma. Critérios de King\'s College para transplante preenchidos — mas não há fígado disponível a tempo.\n\nÓbito no 5º dia por edema cerebral refratário.\n\nUm Tylenol que custou uma vida. Um antídoto barato (NAC) que não foi dado.',
+            grade: 'death',
+            lesson: 'LIÇÃO: Insuficiência hepática aguda por paracetamol SEM tratamento tem mortalidade > 90% em casos graves. NAC reduz mortalidade para < 10% se dada a tempo. É um antídoto barato, disponível em todo hospital. NUNCA "apenas observar" hepatite fulminante.'
+        },
+        'viral_negative': {
+            type: 'narrative',
+            text: '🦠 Sorologias solicitadas (resultado em 24-48h). Enquanto isso, você pergunta sobre medicamentos...\n\nO marido menciona o paracetamol. Você dosa: nível tóxico confirmado.',
+            vitals: { fc: 90, pas: 105, pad: 65, spo2: 97, fr: 17 },
+            next: 'nac_decision'
+        },
+        'biliary_path': {
+            type: 'narrative',
+            text: '🪨 USG de abdome: vias biliares de calibre normal. Sem cálculos. Fígado de tamanho normal com ecogenicidade heterogênea.\n\nNão é obstrução biliar. Mas os exames de sangue chegaram:\nINR 4,8 | TGO 3.500 | TGP 4.200\n\n⚠️ Isso é hepatite fulminante, não colangite!',
+            vitals: { fc: 95, pas: 108, pad: 68, spo2: 97, fr: 18 },
+            next: 'cause_investigation'
+        },
+        'hemolysis_path': {
+            type: 'narrative',
+            text: '🩸 Hemograma: Hb 11,5 (normal). Reticulócitos normais. LDH pouco elevada. Haptoglobina normal.\n\nNão é hemólise. Mas os exames hepáticos chegaram:\nINR 4,8 | TGO 3.500\n\nO problema é no fígado.',
+            vitals: { fc: 95, pas: 108, pad: 68, spo2: 97, fr: 18 },
+            next: 'cause_investigation'
+        },
+        'renal_wrong': {
+            type: 'narrative',
+            text: '🫘 Função renal: creatinina 1,8 (leve elevação — hepatorrenal?). Ureia 65.\n\nMas NÃO explica a icterícia. Exames hepáticos chegam:\nINR 4,8 | TGO 3.500\n\nVocê percebe: o problema é HEPÁTICO, não renal.',
+            vitals: { fc: 98, pas: 105, pad: 65, spo2: 96, fr: 19 },
+            next: 'cause_investigation'
+        },
+        'wrong_ct': {
+            type: 'narrative',
+            text: '📷 TC de tórax normal. 30 minutos perdidos.\n\nOs exames de sangue voltam:\nINR 4,8 | Paracetamol sérico: tóxico.\n\nVocê desperdiçou tempo com exame desnecessário.',
+            vitals: { fc: 95, pas: 100, pad: 62, spo2: 96, fr: 18 },
+            next: 'nac_decision'
+        }
+    }
+},
+// === NOVELA 4: O JOVEM COM FRAQUEZA SÚBITA ===
+{
+    id: 'novela_guillain',
+    title: 'O Personal Trainer que Parou de Andar',
+    icon: '🦵',
+    description: 'Rapaz de 28 anos, atlético, acorda sem conseguir mexer as pernas. Está piorando hora a hora. Você precisa agir antes que a fraqueza chegue ao diafragma.',
+    endings: 3,
+    nodes: {
+        'start': {
+            type: 'narrative',
+            text: '🏥 Quarta-feira, 7h. Emergência.\n\nRafael, 28 anos, personal trainer. Chega de cadeira de rodas empurrado pela namorada.\n\n"Doutor, ontem minhas pernas ficaram fracas. Hoje de manhã não consigo mais levantar. E os braços estão começando a ficar estranhos também..."\n\nEle menciona que teve uma diarreia forte há 2 semanas que durou 3 dias.',
+            vitals: { fc: 72, pas: 125, pad: 78, spo2: 98, fr: 16 },
+            next: 'neuro_exam'
+        },
+        'neuro_exam': {
+            type: 'choice',
+            text: 'Fraqueza ascendente + antecedente de infecção GI. O que avaliar PRIMEIRO no exame neurológico?',
+            options: [
+                { text: '🦵 Reflexos profundos (patelar, aquileu) + força muscular MMII e MMSS + sensibilidade', next: 'exam_results', points: 3 },
+                { text: '🧠 TC de crânio urgente', next: 'ct_waste', points: -1 },
+                { text: '📋 Apenas observar — deve ser estresse (é jovem e saudável)', next: 'observe_disaster', points: -3 }
+            ]
+        },
+        'exam_results': {
+            type: 'narrative',
+            text: '🔍 Exame neurológico:\n\n• Força MMII: 2/5 bilateral (não vence gravidade)\n• Força MMSS: 4/5 (leve fraqueza proximal)\n• Reflexos patelares: AUSENTES bilateralmente\n• Reflexos aquileus: AUSENTES\n• Sensibilidade: em luva e bota (diminuída distalmente)\n• Pares cranianos: normais (por enquanto)\n\nPatrão: fraqueza ascendente + arreflexia + pós-infecção = ?',
+            vitals: { fc: 75, pas: 122, pad: 75, spo2: 98, fr: 17 },
+            next: 'diagnosis_choice'
+        },
+        'diagnosis_choice': {
+            type: 'choice',
+            text: 'Fraqueza ascendente + arreflexia + pós-infecção gastrointestinal (provavelmente Campylobacter). Diagnóstico?',
+            options: [
+                { text: '🧬 Síndrome de Guillain-Barré (polirradiculoneuropatia aguda)', next: 'gbs_correct', points: 3 },
+                { text: '🦴 Hérnia de disco lombar bilateral', next: 'wrong_hernia', points: -1 },
+                { text: '🧪 Hipocalemia grave (K+ baixo)', next: 'wrong_hypokalemia', points: 0 }
+            ]
+        },
+        'gbs_correct': {
+            type: 'narrative',
+            text: '✅ Suspeita de Guillain-Barré confirmada clinicamente.\n\nVocê sabe que é uma emergência neurológica — a fraqueza pode ascender e atingir o DIAFRAGMA (insuficiência respiratória).\n\n❓ Pergunta crucial: Capacidade Vital Forçada (CVF) = qual o valor?',
+            vitals: { fc: 78, pas: 120, pad: 75, spo2: 97, fr: 18 },
+            next: 'cvf_decision'
+        },
+        'cvf_decision': {
+            type: 'choice',
+            text: 'Na Guillain-Barré, qual critério respiratório indica necessidade de intubação profilática?',
+            options: [
+                { text: '🫁 CVF < 20 mL/kg ou queda > 30% = UTI + preparar IOT (regra 20/30)', next: 'correct_monitoring', points: 3 },
+                { text: '🫁 Só intubar quando SpO2 < 80%', next: 'late_intubation', points: -2 },
+                { text: '💊 Não precisa monitorar respiração — SGB não afeta diafragma', next: 'wrong_no_resp', points: -3 }
+            ]
+        },
+        'correct_monitoring': {
+            type: 'narrative',
+            text: '✅ CVF medida: 18 mL/kg (abaixo de 20!). Transferido para UTI.\n\nPressão inspiratória máxima: -25 cmH2O (normal > -30).\n\n⚠️ Critérios de IOT se aproximando. Diafragma comprometendo.\n\nVocê inicia tratamento e prepara a via aérea.',
+            vitals: { fc: 82, pas: 130, pad: 80, spo2: 95, fr: 22 },
+            next: 'treatment_choice'
+        },
+        'treatment_choice': {
+            type: 'choice',
+            text: 'Guillain-Barré com progressão respiratória. Qual tratamento ESPECÍFICO?',
+            options: [
+                { text: '💉 Imunoglobulina IV (IVIg) 0,4g/kg/dia por 5 dias OU Plasmaférese', next: 'ending_best_gbs', points: 3 },
+                { text: '💊 Corticoide em dose alta (pulso de metilprednisolona)', next: 'ending_regular_gbs', points: -1 },
+                { text: '💊 Antibiótico de amplo espectro (pode ser infecção)', next: 'ending_poor_gbs', points: -2 }
+            ]
+        },
+        'ending_best_gbs': {
+            type: 'ending',
+            title: '⭐ MELHOR DESFECHO — Recuperação Completa',
+            text: 'IVIg iniciada na UTI. IOT profilática no 2º dia (CVF caiu para 12 mL/kg).\n\nVentilação mecânica por 8 dias. IVIg completou ciclo de 5 dias.\n\nDia 10: força retornando em MMSS. Dia 14: extubado. Dia 21: movimenta MMII.\n\nAlta para reabilitação em 30 dias. Após 3 meses de fisio: volta a treinar normalmente.\n\nRafael volta à academia 6 meses depois. Recuperação neurológica completa.',
+            grade: 'excellent',
+            lesson: 'LIÇÃO: SGB é autolimitada MAS pode matar por insuficiência respiratória. IVIg ou plasmaférese aceleram recuperação. Monitorar CVF seriada (regra 20/30). IOT profilática ANTES de falência respiratória = melhor prognóstico. Corticoide NÃO funciona na SGB.'
+        },
+        'ending_regular_gbs': {
+            type: 'ending',
+            title: '⚠️ DESFECHO REGULAR — Tratamento Ineficaz',
+            text: 'Corticoide NÃO funciona na Guillain-Barré (evidência de estudos randomizados — pode até piorar).\n\nEnquanto recebia metilprednisolona por 3 dias sem melhora, a fraqueza atingiu o diafragma.\n\nIOT de emergência (não profilática — mais arriscada). Pneumonia associada à VM.\n\nEventualmente recebe IVIg (com 5 dias de atraso). Recuperação lenta. Desmame da VM em 21 dias.\n\nSequela residual: fraqueza distal em pés. Não recupera 100%. Deambula com apoio.',
+            grade: 'regular',
+            lesson: 'LIÇÃO: Corticoides NÃO têm eficácia comprovada na SGB (diferente da CIDP crônica). IVIg ou plasmaférese são os únicos tratamentos eficazes. Atraso = recuperação pior e mais lenta.'
+        },
+        'ending_poor_gbs': {
+            type: 'ending',
+            title: '💀 DESFECHO RUIM — Complicações Graves',
+            text: 'Antibiótico não trata SGB (não é infecção ativa — é autoimune pós-infecciosa).\n\nSem IVIg + sem monitoramento respiratório adequado:\n\nDia 3: Rafael para de respirar no leito de enfermaria. PCR por hipóxia.\n\nRessuscitado com sucesso, mas 6 min de anóxia. IOT pós-PCR. IVIg iniciada (tarde).\n\nSequelas motoras permanentes + encefalopatia hipóxica leve. Não volta a trabalhar.',
+            grade: 'poor',
+            lesson: 'LIÇÃO: SGB NÃO é infecção — é doença autoimune PÓS-infecciosa (anticorpos contra o próprio nervo). Antibiótico não ajuda. A maior ameaça é RESPIRATÓRIA — monitorar CVF de 4/4h na fase de progressão.'
+        },
+        'ct_waste': {
+            type: 'narrative',
+            text: '🧠 TC de crânio: completamente normal (esperado — SGB é periférica, não central).\n\n40 minutos perdidos. Enquanto isso, Rafael nota que os braços pioraram.\n\nVocê refaz o exame neurológico.',
+            vitals: { fc: 78, pas: 125, pad: 78, spo2: 97, fr: 18 },
+            next: 'exam_results'
+        },
+        'observe_disaster': {
+            type: 'ending',
+            title: '💀 ÓBITO — "É Jovem, Vai Melhorar Sozinho"',
+            text: 'Você mandou Rafael para casa com "observação e repouso".\n\n12 horas depois: parou de respirar em casa dormindo. A namorada acordou e ele estava cianótico.\n\nSAMU chega. PCR por asfixia. Ressuscitação prolongada sem sucesso.\n\nÓbito por insuficiência respiratória não monitorada em Guillain-Barré não diagnosticada.\n\nO atleta de 28 anos morreu porque alguém achou que "jovens não adoecem de verdade".',
+            grade: 'death',
+            lesson: 'LIÇÃO: Idade jovem NÃO exclui doença grave. Fraqueza ascendente progressiva + arreflexia é Guillain-Barré até prova contrária. NUNCA dar alta com fraqueza inexplicada sem investigar. A paralisia diafragmática pode ocorrer em horas.'
+        },
+        'late_intubation': {
+            type: 'narrative',
+            text: '⏳ Você não monitorou a CVF. No dia seguinte, SpO2 cai abruptamente para 78%.\n\nIOT de emergência (difícil — paciente em insuficiência respiratória franca). Aspiração durante procedimento.\n\nPneumonia aspirativa + VM prolongada.',
+            vitals: { fc: 130, pas: 90, pad: 55, spo2: 78, fr: 35 },
+            next: 'treatment_choice'
+        },
+        'wrong_no_resp': {
+            type: 'ending',
+            title: '💀 DESFECHO CATASTRÓFICO — Apneia Noturna Fatal',
+            text: 'Você afirmou que "SGB não afeta respiração". ERRADO.\n\n30% dos pacientes com SGB necessitam de VM. É a principal causa de morte na doença.\n\nRafael desenvolveu paralisia diafragmática durante a noite. Sem monitor nem CVF seriada, ninguém percebeu.\n\nPCR por asfixia às 4h da manhã. Óbito.',
+            grade: 'death',
+            lesson: 'LIÇÃO: SGB afeta SIM a respiração (30% precisam de ventilação mecânica). Monitorar CVF de 4/4h é obrigatório. Regra 20/30/40: CVF < 20 mL/kg OU PIMax < -30 OU queda > 30% = IOT. Desconhecer isso é letal.'
+        },
+        'wrong_hernia': {
+            type: 'narrative',
+            text: '🦴 Hérnia de disco não causa fraqueza bilateral simétrica com arreflexia global. Além disso, Rafael não tem dor lombar.\n\nRM de coluna: normal.\n\nTempo perdido. Você reavalia o quadro.',
+            vitals: { fc: 78, pas: 125, pad: 78, spo2: 97, fr: 18 },
+            next: 'diagnosis_choice'
+        },
+        'wrong_hypokalemia': {
+            type: 'narrative',
+            text: '🧪 K+ sérico: 4,2 mEq/L (normal). Não é hipocalemia.\n\nMas a fraqueza é REAL e progressiva. Arreflexia aponta para causa neurológica periférica.\n\nVocê reconsidra.',
+            vitals: { fc: 78, pas: 125, pad: 78, spo2: 97, fr: 18 },
+            next: 'diagnosis_choice'
+        }
+    }
 }
 ];
 
