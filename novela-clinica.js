@@ -222,12 +222,12 @@ const novelaCases = [
         },
         'seizure_action': {
             type: 'choice',
-            text: '⚡ A paciente está convulsionando AGORA. Qual sua ação imediata?',
+            text: 'Gestante de 34 semanas em crise convulsiva tônico-clônica generalizada. PA pré-ictal registrada: 190/120 mmHg. Conduta anticonvulsivante imediata:',
             options: [
-                { text: '💉 Sulfato de Magnésio IV (4-6g em 20 min) — é eclâmpsia até prova contrária', next: 'mgso4_given', points: 3 },
-                { text: '💊 Diazepam IV 10mg para parar a convulsão', next: 'diazepam_path', points: 1 },
-                { text: '👶 Cesárea de emergência imediata (tirar o bebê agora)', next: 'immediate_csection', points: -1 },
-                { text: '📞 Ligar para o neurologista (pode ser epilepsia)', next: 'call_neuro', points: -2 }
+                { text: 'Diazepam 10mg IV lento + Fenitoína 20mg/kg IV em 30 min (protocolo neurológico padrão para status epilepticus)', next: 'diazepam_path', points: 1 },
+                { text: 'Sulfato de Magnésio 4g IV em 20 min (dose de ataque) + manutenção 1-2g/h em bomba de infusão contínua', next: 'mgso4_given', points: 3 },
+                { text: 'Midazolam 15mg IM (face lateral da coxa) + Labetalol 20mg IV para controle pressórico simultâneo', next: 'diazepam_path', points: 0 },
+                { text: 'Tiopental 3-5mg/kg IV para indução anestésica + intubação orotraqueal + cesárea de emergência imediata', next: 'immediate_csection', points: -1 }
             ]
         },
         'mgso4_given': {
@@ -238,11 +238,12 @@ const novelaCases = [
         },
         'post_seizure_mgso4': {
             type: 'choice',
-            text: 'Convulsão controlada com MgSO4. PA ainda 175/110. FC fetal recuperando (agora 120 bpm). Próximos passos?',
+            text: 'Convulsão controlada com MgSO4. PA atual: 175/110 mmHg. FC fetal: 120 bpm (recuperada). Exames: proteinúria 4,2g/24h, plaquetas 98.000, TGO 180, LDH 850. Próxima conduta:',
             options: [
-                { text: '💊 Anti-hipertensivo (Hidralazina IV) + manter MgSO4 + planejar PARTO nas próximas horas', next: 'correct_management', points: 3 },
-                { text: '🏠 Observar 24h e dar alta se melhorar', next: 'discharge_disaster', points: -3 },
-                { text: '💉 Aumentar dose de MgSO4 para 10g (dobrar)', next: 'mgso4_overdose', points: -2 }
+                { text: 'Hidralazina 5mg IV a cada 20 min (alvo PAS 140-150) + manter MgSO4 + programar resolução da gestação (parto) nas próximas horas', next: 'correct_management', points: 3 },
+                { text: 'Nifedipino 10mg VO a cada 30 min + manter MgSO4 + corticoide para maturação pulmonar fetal + postergar parto por 48h', next: 'correct_management', points: 1 },
+                { text: 'Nitroprussiato de sódio IV 0,5mcg/kg/min + suspender MgSO4 (risco de hipotensão combinada) + cesárea em 2h', next: 'ending_poor_eclampsia', points: -1 },
+                { text: 'Sulfato de Magnésio aumentar para 3g/h + Metildopa 500mg VO + monitoramento fetal contínuo + aguardar 72h para parto', next: 'mgso4_overdose', points: -2 }
             ]
         },
         'correct_management': {
@@ -253,10 +254,12 @@ const novelaCases = [
         },
         'delivery_decision': {
             type: 'choice',
-            text: 'Eclâmpsia + HELLP parcial + 34 semanas. O parto é o tratamento definitivo. Qual via?',
+            text: 'Eclâmpsia + HELLP parcial (plaquetas 98.000, TGO 180) + IG 34 semanas. PA controlada com Hidralazina. Decisão obstétrica:',
             options: [
-                { text: '🏥 Cesárea assim que estabilizar (não esperar trabalho de parto)', next: 'ending_best_eclampsia', points: 3 },
-                { text: '⏳ Indução de parto normal com ocitocina', next: 'ending_ok_eclampsia', points: 1 }
+                { text: 'Cesárea sob anestesia geral (plaquetas < 100.000 = contraindicação relativa a bloqueio neuroaxial) — resolução em até 2h', next: 'ending_best_eclampsia', points: 3 },
+                { text: 'Indução de parto com Misoprostol 25mcg vaginal a cada 6h + ocitocina se necessário — via vaginal é menos invasiva', next: 'ending_ok_eclampsia', points: 1 },
+                { text: 'Betametasona 12mg IM 2 doses (24/24h) para maturação pulmonar + cesárea após completar ciclo (48h)', next: 'ending_ok_eclampsia', points: 0 },
+                { text: 'Transfusão de plaquetas para elevar > 100.000 + raquianestesia + cesárea programada em 12h', next: 'ending_poor_eclampsia', points: -1 }
             ]
         },
         'ending_best_eclampsia': {
@@ -281,10 +284,12 @@ const novelaCases = [
         },
         'diazepam_choice': {
             type: 'choice',
-            text: 'Convulsão recorrente apesar do diazepam. O que fazer?',
+            text: 'Convulsão recorrente (segunda crise em 5 minutos) apesar de benzodiazepínico. PA 185/115. FC fetal com desacelerações tardias. Conduta:',
             options: [
-                { text: '✅ Iniciar MgSO4 agora (deveria ter sido o primeiro)', next: 'late_mgso4', points: 2 },
-                { text: '💊 Mais diazepam + fenitoína', next: 'ending_poor_eclampsia', points: -2 }
+                { text: 'Sulfato de Magnésio 4g IV em 20 min + manutenção 1g/h — deveria ter sido a primeira escolha em eclâmpsia', next: 'late_mgso4', points: 3 },
+                { text: 'Fenitoína 20mg/kg IV em 30 min (dose de ataque) + diazepam 10mg IV adicional se nova crise', next: 'ending_poor_eclampsia', points: -1 },
+                { text: 'Propofol 2mg/kg IV para sedação profunda + intubação orotraqueal + cesárea de emergência imediata', next: 'immediate_csection', points: 0 },
+                { text: 'Valproato de sódio 40mg/kg IV lento + Labetalol 20mg IV — pode ser epilepsia com gatilho gestacional', next: 'ending_poor_eclampsia', points: -2 }
             ]
         },
         'late_mgso4': {
@@ -315,10 +320,12 @@ const novelaCases = [
         },
         'neuro_disaster': {
             type: 'choice',
-            text: '🚨 Paciente em status epilepticus eclâmptico. FC fetal 60 (sofrimento grave). O que fazer?',
+            text: 'Status eclâmptico (3ª crise). PA 200/125. FC fetal 60 bpm persistente (bradicardia grave = sofrimento fetal agudo). SpO2 materna 82%. Conduta:',
             options: [
-                { text: 'MgSO4 AGORA + cesárea de emergência após controle', next: 'ending_ok_eclampsia', points: 2 },
-                { text: 'Continuar esperando o neurologista', next: 'ending_death_eclampsia', points: -5 }
+                { text: 'Sulfato de Magnésio 6g IV em 10 min (dose resgate) + O2 15L máscara + decúbito lateral esquerdo + cesárea após estabilização (15-20 min)', next: 'ending_ok_eclampsia', points: 3 },
+                { text: 'Tiopental + Succinilcolina + IOT + Cesárea sob anestesia geral imediata (prioridade é tirar o bebê AGORA)', next: 'ending_ok_eclampsia', points: 1 },
+                { text: 'Diazepam 20mg IV + Hidralazina 10mg IV + solicitar TC de crânio para excluir hemorragia antes de decidir via de parto', next: 'ending_death_eclampsia', points: -2 },
+                { text: 'Fenobarbital 20mg/kg IV + Dexametasona 10mg IV + monitoramento contínuo — aguardar resolução espontânea das crises', next: 'ending_death_eclampsia', points: -2 }
             ]
         },
         'ending_death_eclampsia': {
@@ -360,12 +367,12 @@ const novelaCases = [
         },
         'initial_workup': {
             type: 'choice',
-            text: 'Icterícia aguda + encefalopatia + mulher jovem. Qual é seu raciocínio diagnóstico principal?',
+            text: 'Mulher de 42 anos com icterícia aguda (2 dias), confusão mental (Glasgow 13), dor em hipocôndrio direito. Sem doença hepática prévia conhecida. Abordagem diagnóstica inicial:',
             options: [
-                { text: '🔬 Insuficiência Hepática Aguda (hepatite fulminante?) — pedir INR, transaminases, bilirrubinas URGENTE', next: 'liver_failure_path', points: 3 },
-                { text: '🪨 Cálculo biliar com colangite (Charcot?) — pedir USG de vias biliares', next: 'biliary_path', points: 1 },
-                { text: '🩸 Hemólise aguda — pedir hemograma + reticulócitos', next: 'hemolysis_path', points: 0 },
-                { text: '🫘 Problema renal — pedir função renal', next: 'renal_wrong', points: -1 }
+                { text: 'Hemograma + reticulócitos + LDH + haptoglobina + bilirrubinas fracionadas — investigar hemólise como causa da icterícia', next: 'hemolysis_path', points: 0 },
+                { text: 'USG de abdome superior com Doppler portal + bilirrubinas + FA/GGT — investigar obstrução biliar (coledocolitíase vs. tumor)', next: 'biliary_path', points: 1 },
+                { text: 'INR + TGO/TGP + bilirrubinas + albumina + amônia sérica — investigar insuficiência hepática aguda (encefalopatia + icterícia)', next: 'liver_failure_path', points: 3 },
+                { text: 'TC de abdome com contraste + CEA + CA 19-9 + alfafetoproteína — investigar neoplasia hepatobiliar ou metástase hepática', next: 'wrong_ct', points: -1 }
             ]
         },
         'liver_failure_path': {
@@ -376,11 +383,12 @@ const novelaCases = [
         },
         'cause_investigation': {
             type: 'choice',
-            text: 'Insuficiência hepática aguda confirmada. Precisa descobrir a CAUSA para tratar. O que investigar?',
+            text: 'Insuficiência hepática aguda confirmada (INR 4,8 + transaminases > 3.000 + encefalopatia hepática). Sem doença hepática prévia. Investigação etiológica prioritária:',
             options: [
-                { text: '💊 Perguntar sobre medicamentos/chás + dosar paracetamol sérico', next: 'paracetamol_found', points: 3 },
-                { text: '🦠 Sorologias virais (hepatite A, B, C, E, CMV, EBV)', next: 'viral_negative', points: 2 },
-                { text: '🫁 TC de tórax (pode ser câncer com metástase hepática)', next: 'wrong_ct', points: -1 }
+                { text: 'Sorologias virais completas (anti-HAV IgM, HBsAg, anti-HBc IgM, anti-HCV, PCR HCV, anti-HEV IgM) + autoanticorpos (FAN, anti-músculo liso)', next: 'viral_negative', points: 2 },
+                { text: 'Anamnese farmacológica detalhada (medicamentos, fitoterápicos, suplementos) + dosagem sérica de paracetamol (acetaminofeno) + nível de APAP', next: 'paracetamol_found', points: 3 },
+                { text: 'Biópsia hepática transjugular (INR impede percutânea) + ceruloplasmina + cobre sérico e urinário (excluir Wilson)', next: 'viral_negative', points: 1 },
+                { text: 'AngioTC de abdome com fase arterial e portal + Doppler de veias hepáticas (excluir Budd-Chiari) + ferritina sérica', next: 'wrong_ct', points: 0 }
             ]
         },
         'paracetamol_found': {
@@ -391,11 +399,12 @@ const novelaCases = [
         },
         'nac_decision': {
             type: 'choice',
-            text: 'Causa: hepatotoxicidade por paracetamol (acetaminofeno). Antídoto?',
+            text: 'Causa confirmada: hepatotoxicidade por paracetamol (nível sérico tóxico no nomograma de Rumack-Matthew). INR 4,8, TGO 3.500, encefalopatia grau II. Tratamento:',
             options: [
-                { text: '💉 N-Acetilcisteína (NAC) IV protocolo de 21h + contato com centro de transplante', next: 'ending_best_liver', points: 3 },
-                { text: '🩸 Plasmaférese de urgência', next: 'ending_ok_liver', points: 1 },
-                { text: '⏳ Apenas observar — o fígado regenera sozinho', next: 'ending_death_liver', points: -3 }
+                { text: 'N-Acetilcisteína (NAC) IV protocolo de 21h (150mg/kg em 1h → 50mg/kg em 4h → 100mg/kg em 16h) + contato com centro de transplante hepático', next: 'ending_best_liver', points: 3 },
+                { text: 'Plasmaférese terapêutica (troca de 1,5 volemia) para remoção de toxinas + vitamina K 10mg IV + plasma fresco congelado para corrigir INR', next: 'ending_ok_liver', points: 1 },
+                { text: 'Carvão ativado 1g/kg VO por SNG + Lactulose 30mL 8/8h para encefalopatia + dieta hipoproteica + monitoramento clínico em UTI', next: 'ending_death_liver', points: -1 },
+                { text: 'Transplante hepático de emergência (listar MELD exceção) + suporte clínico intensivo enquanto aguarda — NAC tem pouca evidência após 24h', next: 'ending_ok_liver', points: 0 }
             ]
         },
         'ending_best_liver': {
@@ -467,11 +476,12 @@ const novelaCases = [
         },
         'neuro_exam': {
             type: 'choice',
-            text: 'Fraqueza ascendente + antecedente de infecção GI. O que avaliar PRIMEIRO no exame neurológico?',
+            text: 'Homem de 28 anos com fraqueza ascendente progressiva (MMII → MMSS em 24h) + gastroenterite há 2 semanas. Exame neurológico: o que priorizar?',
             options: [
-                { text: '🦵 Reflexos profundos (patelar, aquileu) + força muscular MMII e MMSS + sensibilidade', next: 'exam_results', points: 3 },
-                { text: '🧠 TC de crânio urgente', next: 'ct_waste', points: -1 },
-                { text: '📋 Apenas observar — deve ser estresse (é jovem e saudável)', next: 'observe_disaster', points: -3 }
+                { text: 'Reflexos profundos (patelar, aquileu, bicipital) + graduação de força por segmentos + sensibilidade em dermátomos', next: 'exam_results', points: 3 },
+                { text: 'TC de crânio sem contraste + TC de coluna total com reconstrução sagital (excluir compressão medular ou lesão central)', next: 'ct_waste', points: -1 },
+                { text: 'Eletroneuromiografia de urgência (ENMG) + punção lombar com dosagem de proteínas no LCR', next: 'exam_results', points: 1 },
+                { text: 'CK total + aldolase + TSH + eletrólitos (K+, Ca++, Mg++) — excluir miopatia inflamatória ou causa metabólica', next: 'wrong_hypokalemia', points: 0 }
             ]
         },
         'exam_results': {
@@ -482,11 +492,12 @@ const novelaCases = [
         },
         'diagnosis_choice': {
             type: 'choice',
-            text: 'Fraqueza ascendente + arreflexia + pós-infecção gastrointestinal (provavelmente Campylobacter). Diagnóstico?',
+            text: 'Achados: fraqueza flácida simétrica ascendente + arreflexia global + hipoestesia em bota e luva + antecedente de gastroenterite (possível Campylobacter) há 2 semanas. Diagnóstico mais provável:',
             options: [
-                { text: '🧬 Síndrome de Guillain-Barré (polirradiculoneuropatia aguda)', next: 'gbs_correct', points: 3 },
-                { text: '🦴 Hérnia de disco lombar bilateral', next: 'wrong_hernia', points: -1 },
-                { text: '🧪 Hipocalemia grave (K+ baixo)', next: 'wrong_hypokalemia', points: 0 }
+                { text: 'Síndrome de Guillain-Barré (polirradiculoneuropatia desmielinizante inflamatória aguda — AIDP)', next: 'gbs_correct', points: 3 },
+                { text: 'Mielite transversa aguda (inflamação medular pós-infecciosa — nível sensitivo + disfunção esfincteriana)', next: 'wrong_hernia', points: 0 },
+                { text: 'Polineuropatia do doente crítico / neuropatia nutricional (deficiência de B1 pós-diarreia prolongada)', next: 'wrong_hypokalemia', points: -1 },
+                { text: 'Miastenia gravis de início agudo (anticorpos anti-receptor de acetilcolina — fraqueza flutuante)', next: 'wrong_hypokalemia', points: -1 }
             ]
         },
         'gbs_correct': {
@@ -497,11 +508,12 @@ const novelaCases = [
         },
         'cvf_decision': {
             type: 'choice',
-            text: 'Na Guillain-Barré, qual critério respiratório indica necessidade de intubação profilática?',
+            text: 'Guillain-Barré confirmada clinicamente. Paciente internado. Qual parâmetro respiratório monitorar e qual o limiar para intubação profilática?',
             options: [
-                { text: '🫁 CVF < 20 mL/kg ou queda > 30% = UTI + preparar IOT (regra 20/30)', next: 'correct_monitoring', points: 3 },
-                { text: '🫁 Só intubar quando SpO2 < 80%', next: 'late_intubation', points: -2 },
-                { text: '💊 Não precisa monitorar respiração — SGB não afeta diafragma', next: 'wrong_no_resp', points: -3 }
+                { text: 'Capacidade Vital Forçada (CVF) seriada a cada 4-6h — intubação profilática se CVF < 20 mL/kg ou queda > 30% em 24h', next: 'correct_monitoring', points: 3 },
+                { text: 'SpO2 contínua por oximetria — intubação apenas se SpO2 < 88% persistente apesar de O2 suplementar por cateter nasal', next: 'late_intubation', points: -1 },
+                { text: 'Gasometria arterial seriada a cada 12h — intubação se PaCO2 > 50 mmHg ou PaO2 < 60 mmHg em ar ambiente', next: 'late_intubation', points: 0 },
+                { text: 'Peak-flow (PFE) matinal e noturno — intubação se variabilidade > 20% ou PFE < 200 L/min (critério de asma grave)', next: 'wrong_no_resp', points: -2 }
             ]
         },
         'correct_monitoring': {
@@ -512,11 +524,12 @@ const novelaCases = [
         },
         'treatment_choice': {
             type: 'choice',
-            text: 'Guillain-Barré com progressão respiratória. Qual tratamento ESPECÍFICO?',
+            text: 'Guillain-Barré com progressão respiratória (CVF 18 mL/kg). Paciente na UTI, IOT preparada. Tratamento imunomodulador específico:',
             options: [
-                { text: '💉 Imunoglobulina IV (IVIg) 0,4g/kg/dia por 5 dias OU Plasmaférese', next: 'ending_best_gbs', points: 3 },
-                { text: '💊 Corticoide em dose alta (pulso de metilprednisolona)', next: 'ending_regular_gbs', points: -1 },
-                { text: '💊 Antibiótico de amplo espectro (pode ser infecção)', next: 'ending_poor_gbs', points: -2 }
+                { text: 'Imunoglobulina humana IV (IVIg) 0,4g/kg/dia por 5 dias consecutivos — inicia hoje', next: 'ending_best_gbs', points: 3 },
+                { text: 'Metilprednisolona 1g IV/dia por 5 dias (pulsoterapia) — protocolo de doença desmielinizante autoimune', next: 'ending_regular_gbs', points: -1 },
+                { text: 'Plasmaférese terapêutica (5 sessões em 10 dias, troca de 1 volemia/sessão) — remoção de autoanticorpos circulantes', next: 'ending_best_gbs', points: 2 },
+                { text: 'Ciclofosfamida 1g/m² IV dose única + Prednisona 1mg/kg/dia VO — imunossupressão combinada para doença autoimune grave', next: 'ending_poor_gbs', points: -2 }
             ]
         },
         'ending_best_gbs': {
