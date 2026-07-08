@@ -1973,3 +1973,69 @@ header small a:hover {
     .vital-item { min-width: 50px; padding: 4px 8px; }
     .vital-value { font-size: 1rem; }
 }
+
+/* ============================================================
+   NOVELA CLÍNICA (Visual Novel)
+   ============================================================ */
+.nv-header { text-align: center; margin-bottom: 2rem; }
+.nv-header h2 { color: var(--primary-color); margin: 0 0 0.5rem; }
+.nv-header p { color: var(--text-color-light); font-size: 0.95rem; }
+.nv-endings-info { margin-top: 0.5rem; font-size: 0.85rem; color: var(--primary-color); font-weight: 500; }
+
+.nv-list { display: flex; flex-direction: column; gap: 12px; }
+.nv-card { display: flex; align-items: center; gap: 16px; padding: 20px; border: 1px solid var(--border-color); border-radius: 12px; background: #fff; transition: all 0.2s; }
+.nv-card:hover { border-color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,90,156,0.1); transform: translateY(-1px); }
+.nv-card-icon { font-size: 2.5rem; }
+.nv-card-content { flex: 1; }
+.nv-card-content h3 { margin: 0 0 4px; }
+.nv-card-content p { margin: 0 0 6px; font-size: 0.88rem; color: var(--text-color-light); }
+.nv-endings-badge { font-size: 0.75rem; background: rgba(0,90,156,0.08); color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-weight: 500; }
+.nv-start-btn { padding: 12px 24px; font-size: 0.95rem; font-weight: 600; color: #fff; background: var(--primary-color); border: none; border-radius: 8px; cursor: pointer; }
+.nv-start-btn:hover { background: #004578; }
+
+/* Cena */
+.nv-scene { max-width: 700px; margin: 0 auto; }
+.nv-top { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+.nv-quit-btn { background: none; border: 1px solid var(--border-color); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
+.nv-case-title { font-size: 1rem; font-weight: 600; color: var(--primary-color); }
+
+.nv-vitals { display: flex; gap: 14px; justify-content: center; background: #0a0a1a; padding: 10px 16px; border-radius: 8px; margin-bottom: 1.2rem; font-size: 0.85rem; font-family: 'Courier New', monospace; }
+.nv-vitals span { color: #4ade80; }
+.nv-vitals .vital-warning { color: #fbbf24; }
+.nv-vitals .vital-danger { color: #f87171; animation: vitalPulse 1s infinite; }
+
+.nv-narrative { background: #f8f9fa; border-left: 4px solid var(--primary-color); border-radius: 0 10px 10px 0; padding: 18px 22px; font-size: 0.95rem; line-height: 1.8; margin-bottom: 1.2rem; }
+.nv-continue-btn { width: 100%; padding: 14px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; }
+.nv-continue-btn:hover { background: #004578; }
+
+.nv-question { font-size: 1.05rem; font-weight: 600; margin-bottom: 1rem; line-height: 1.5; padding: 14px 18px; background: #fff; border: 2px solid var(--primary-color); border-radius: 10px; }
+.nv-choices { display: flex; flex-direction: column; gap: 10px; }
+.nv-choice-btn { padding: 16px 20px; border: 2px solid var(--border-color); border-radius: 10px; background: #fff; cursor: pointer; text-align: left; font-size: 0.95rem; line-height: 1.4; transition: all 0.15s; }
+.nv-choice-btn:hover { border-color: var(--primary-color); background: rgba(0,90,156,0.04); transform: translateX(4px); }
+
+/* Endings */
+.nv-ending { padding: 24px; border-radius: 12px; margin-bottom: 1.5rem; }
+.nv-end-excellent { background: rgba(25,135,84,0.08); border: 2px solid var(--success-color); }
+.nv-end-good { background: rgba(0,90,156,0.06); border: 2px solid var(--primary-color); }
+.nv-end-regular { background: rgba(255,193,7,0.08); border: 2px solid var(--warning-color); }
+.nv-end-poor { background: rgba(220,53,69,0.06); border: 2px solid var(--danger-color); }
+.nv-end-death { background: rgba(30,30,30,0.9); border: 2px solid #dc2626; color: #fecaca; }
+.nv-end-death h3 { color: #f87171; }
+
+.nv-ending h3 { margin: 0 0 12px; font-size: 1.2rem; }
+.nv-ending-text { font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem; }
+.nv-lesson { background: rgba(255,255,255,0.5); padding: 14px; border-radius: 8px; font-size: 0.88rem; line-height: 1.6; }
+.nv-end-death .nv-lesson { background: rgba(0,0,0,0.3); }
+
+.nv-ending-actions { display: flex; gap: 12px; justify-content: center; margin-bottom: 1rem; }
+.nv-retry-btn { padding: 12px 24px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.nv-back-btn { padding: 12px 24px; background: #fff; color: var(--primary-color); border: 2px solid var(--primary-color); border-radius: 8px; font-weight: 600; cursor: pointer; }
+.nv-path-info { text-align: center; font-size: 0.8rem; color: var(--text-color-light); }
+
+[data-theme="dark"] .nv-narrative { background: #2a2a3c; border-left-color: var(--primary-color); }
+[data-theme="dark"] .nv-card { background: #2a2a3c; border-color: #3d3d50; }
+[data-theme="dark"] .nv-choice-btn { background: #2a2a3c; border-color: #3d3d50; color: #e4e4e7; }
+[data-theme="dark"] .nv-question { background: #2a2a3c; border-color: var(--primary-color); }
+[data-theme="dark"] .nv-lesson { background: rgba(0,0,0,0.3); }
+
+@media (max-width: 768px) { .nv-card { flex-direction: column; text-align: center; } .nv-start-btn { width: 100%; } .nv-vitals { flex-wrap: wrap; font-size: 0.78rem; } }
