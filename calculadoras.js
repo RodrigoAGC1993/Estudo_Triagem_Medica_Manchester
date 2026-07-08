@@ -26,6 +26,7 @@ const calculadoras = [
         icon: '🧠',
         description: 'Nível de consciência — abertura ocular, resposta verbal e motora',
         category: 'Neurologia',
+        equipment: ['👁️ Observação clínica (sem equipamento especial)', '🗣️ Estímulo verbal/doloroso (para testar respostas)'],
         fields: [
             {
                 label: 'Abertura Ocular',
@@ -84,6 +85,7 @@ const calculadoras = [
         icon: '🦠',
         description: 'Rastreio rápido de sepse à beira-leito — Sepsis-3 (JAMA 2016)',
         category: 'Emergência / Infectologia',
+        equipment: ['💉 Aparelho de pressão (esfigmomanômetro)', '⏱️ Relógio (contar frequência respiratória)', '🧠 Avaliação do nível de consciência (Glasgow)'],
         fields: [
             {
                 label: 'Pressão Arterial Sistólica ≤ 100 mmHg?',
@@ -127,6 +129,7 @@ const calculadoras = [
         icon: '🫁',
         description: 'Probabilidade clínica de Embolia Pulmonar',
         category: 'Pneumologia / Emergência',
+        equipment: ['📋 Anamnese detalhada (histórico clínico)', '❤️ Monitor cardíaco ou oxímetro (FC)', '🦵 Exame físico dos membros inferiores (sinais de TVP)'],
         fields: [
             { label: 'Sinais/sintomas clínicos de TVP?', id: 'wells_tvp', options: [{ value: 0, text: 'Não' }, { value: 3, text: 'Sim (+3)' }] },
             { label: 'TEP é o diagnóstico mais provável?', id: 'wells_likely', options: [{ value: 0, text: 'Não' }, { value: 3, text: 'Sim (+3)' }] },
@@ -152,6 +155,7 @@ const calculadoras = [
         icon: '🫁',
         description: 'Gravidade de Pneumonia Adquirida na Comunidade — define local de tratamento',
         category: 'Pneumologia',
+        equipment: ['💉 Aparelho de pressão', '⏱️ Relógio (frequência respiratória)', '🧪 Exame de sangue (ureia)', '🧠 Avaliação mental (orientação tempo/espaço)'],
         fields: [
             { label: 'Confusão mental (AMTS ≤ 8)?', id: 'curb_c', options: [{ value: 0, text: 'Não' }, { value: 1, text: 'Sim' }] },
             { label: 'Ureia > 50 mg/dL (> 7 mmol/L)?', id: 'curb_u', options: [{ value: 0, text: 'Não' }, { value: 1, text: 'Sim' }] },
@@ -176,6 +180,7 @@ const calculadoras = [
         icon: '❤️',
         description: 'Risco de AVC em pacientes com Fibrilação Atrial — indicação de anticoagulação',
         category: 'Cardiologia',
+        equipment: ['📋 Prontuário médico / Anamnese (histórico de doenças)', '🫀 Ecocardiograma (para FE, se disponível)'],
         fields: [
             { label: 'Insuficiência Cardíaca Congestiva (ou FE < 40%)?', id: 'cha_c', options: [{ value: 0, text: 'Não' }, { value: 1, text: 'Sim (+1)' }] },
             { label: 'Hipertensão Arterial?', id: 'cha_h', options: [{ value: 0, text: 'Não' }, { value: 1, text: 'Sim (+1)' }] },
@@ -202,6 +207,7 @@ const calculadoras = [
         icon: '💔',
         description: 'Estratificação de risco em dor torácica na emergência — evento cardíaco adverso em 6 semanas',
         category: 'Cardiologia / Emergência',
+        equipment: ['📋 Anamnese (característica da dor)', '📈 Eletrocardiograma (ECG 12 derivações)', '🧪 Exame de sangue (troponina)', '📋 Histórico de fatores de risco (DM, HAS, tabagismo, colesterol, família)'],
         fields: [
             {
                 label: 'História (anamnese)',
@@ -265,6 +271,7 @@ const calculadoras = [
         icon: '📊',
         description: 'Detecção precoce de deterioração clínica — utilizado na ronda de enfermagem',
         category: 'Cuidados Críticos',
+        equipment: ['💉 Aparelho de pressão', '🌡️ Termômetro', '⏱️ Relógio (FC e FR)', '🫁 Oxímetro de pulso (SpO2)', '🧠 Avaliação do nível de consciência'],
         fields: [
             {
                 label: 'Frequência Respiratória (irpm)',
@@ -366,6 +373,9 @@ function renderCalcList() {
                 <h3>${calc.title}</h3>
                 <p>${calc.description}</p>
                 <span class="calc-card-category">${calc.category}</span>
+                <div class="calc-card-equip">
+                    <strong>Necessário:</strong> ${calc.equipment.join(' • ')}
+                </div>
             </div>
             <button class="calc-open-btn" data-calc-id="${calc.id}">Calcular →</button>
         </div>
@@ -394,6 +404,10 @@ function openCalculadora(calcId) {
                 <span class="calc-form-icon">${calc.icon}</span>
                 <h3>${calc.title}</h3>
                 <p>${calc.description}</p>
+                <div class="calc-equip-box">
+                    <strong>🩺 Você vai precisar de:</strong>
+                    <ul>${calc.equipment.map(e => `<li>${e}</li>`).join('')}</ul>
+                </div>
                 <small class="calc-ref">📖 ${calc.reference}</small>
             </div>
             <form id="calc-form" class="calc-form">
