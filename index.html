@@ -9,6 +9,9 @@
 <body>
     <div class="container">
         <header>
+            <div class="header-top">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Alternar modo escuro">🌙</button>
+            </div>
             <h1>Sistema de Triagem Médica</h1>
             <p>Baseado no Protocolo de Manchester — Classificação de Risco e Encaminhamento</p>
             <small>Fonte: <a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z" target="_blank">Ministério da Saúde — Saúde de A a Z</a></small>
@@ -21,6 +24,8 @@
             <button class="tab-btn" data-tab="calculadoras">🧮 Calculadoras</button>
             <button class="tab-btn" data-tab="fluxogramas">📊 Fluxogramas</button>
             <button class="tab-btn" data-tab="casos">📚 Casos</button>
+            <button class="tab-btn" data-tab="quando-ir">🏠 Quando Ir?</button>
+            <button class="tab-btn" data-tab="primeiros-socorros">🩹 Socorros</button>
             <button class="tab-btn" data-tab="dicionario">📖 Dicionário</button>
             <button class="tab-btn" data-tab="testes">📝 Testes</button>
         </nav>
@@ -338,6 +343,12 @@
             <p id="observacao"></p>
         </div>
 
+        <!-- Histórico de Triagens -->
+        <fieldset class="historico-fieldset">
+            <legend>📋 Histórico de Triagens</legend>
+            <div id="historico-container"></div>
+        </fieldset>
+
         </div><!-- Fim tab-triagem -->
 
         <!-- ABA: Guia de Sintomas -->
@@ -386,6 +397,16 @@
             <div id="cases-list" class="cases-list"></div>
             <div id="cases-active" class="cases-active hidden"></div>
         </div><!-- Fim tab-casos -->
+
+        <!-- ABA: Quando Procurar o Hospital -->
+        <div id="tab-quando-ir" class="tab-content">
+            <div id="quando-ir-content"></div>
+        </div><!-- Fim tab-quando-ir -->
+
+        <!-- ABA: Primeiros Socorros -->
+        <div id="tab-primeiros-socorros" class="tab-content">
+            <div id="primeiros-socorros-content"></div>
+        </div><!-- Fim tab-primeiros-socorros -->
 
         <!-- ABA: Dicionário Clínico -->
         <div id="tab-dicionario" class="tab-content">
@@ -458,5 +479,10 @@
     <script src="fluxogramas.js"></script>
     <script src="casos-clinicos.js"></script>
     <script src="dicionario.js"></script>
+    <script src="tooltips.js"></script>
+    <script src="theme.js"></script>
+    <script src="historico.js"></script>
+    <script src="quando-ir.js"></script>
+    <script src="primeiros-socorros.js"></script>
 </body>
 </html>

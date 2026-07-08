@@ -77,7 +77,10 @@ function displayResult(recomendacao) {
     }
     resultadoDiv.classList.remove('hidden');
 
-    // Integração: link para Guia de Sintomas
+    // Salvar no histórico
+    if (typeof salvarTriagem === 'function') {
+        salvarTriagem(recomendacao);
+    }
     let linkContainer = document.getElementById('resultado-links');
     if (!linkContainer) {
         linkContainer = document.createElement('div');
