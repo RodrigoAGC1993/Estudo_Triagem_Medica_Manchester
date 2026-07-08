@@ -14,6 +14,19 @@
             <small>Fonte: <a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z" target="_blank">Ministério da Saúde — Saúde de A a Z</a></small>
         </header>
 
+        <!-- Navegação por Abas -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="triagem">🏥 Triagem</button>
+            <button class="tab-btn" data-tab="sintomas">🔍 Sintomas</button>
+            <button class="tab-btn" data-tab="calculadoras">🧮 Calculadoras</button>
+            <button class="tab-btn" data-tab="fluxogramas">📊 Fluxogramas</button>
+            <button class="tab-btn" data-tab="casos">📚 Casos</button>
+            <button class="tab-btn" data-tab="testes">📝 Testes</button>
+        </nav>
+
+        <!-- ABA: Triagem -->
+        <div id="tab-triagem" class="tab-content active">
+
         <form id="triagem-form">
             <!-- Identificação do Paciente -->
             <fieldset>
@@ -230,6 +243,28 @@
                         <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_lombar"> Dor lombar / nos rins</label>
                         <label class="checkbox-label"><input type="checkbox" name="sintomas" value="urina_escura"> Urina escura (cor de coca-cola)</label>
                         <label class="checkbox-label"><input type="checkbox" name="sintomas" value="urina_espumosa"> Urina espumosa</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="oliguria"> Diminuição do volume urinário</label>
+                    </div>
+                </div>
+
+                <!-- Sinais de Alarme (Harrison) -->
+                <div class="symptom-category">
+                    <h4>🚨 Sinais de Alarme / Gravidade</h4>
+                    <div class="symptoms-grid">
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="rigidez_nuca"> Rigidez de nuca / Dor ao flexionar pescoço</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="fotofobia"> Fotofobia (intolerância à luz)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="petequias_purpura"> Petéquias / Púrpura (manchas roxas puntiformes)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_panturrilha"> Dor / inchaço em uma panturrilha</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_pleuritica"> Dor no peito que piora ao respirar (pleurítica)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="hemoptise"> Tosse com sangue (hemoptise)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="abdome_rigido"> Abdome endurecido / rígido</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="dor_abdominal_subita"> Dor abdominal súbita e intensa</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="halito_cetonico"> Hálito com odor frutado / cetônico</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="desidratacao_grave"> Desidratação grave (boca seca, olhos fundos)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="edema_face_labios"> Inchaço súbito de face / lábios / língua</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="urticaria_generalizada"> Urticária generalizada (placas por todo corpo)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="estridor"> Dificuldade para respirar com ruído (estridor)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="sintomas" value="hipotensao_sintomatica"> Sensação de desmaio ao levantar / tontura postural</label>
                     </div>
                 </div>
 
@@ -293,12 +328,111 @@
             <p id="observacao"></p>
         </div>
 
+        </div><!-- Fim tab-triagem -->
+
+        <!-- ABA: Guia de Sintomas -->
+        <div id="tab-sintomas" class="tab-content">
+            <div class="sintomas-guide-header">
+                <h2>🔍 Guia de Sintomas</h2>
+                <p>Diagnóstico diferencial por sintoma — causas, red flags e conduta. Baseado em Harrison e Manuais MSD.</p>
+                <div class="sg-gender-selector">
+                    <button class="sg-gender-btn active" data-gender="all">👤 Todos</button>
+                    <button class="sg-gender-btn" data-gender="male">♂️ Masculino</button>
+                    <button class="sg-gender-btn" data-gender="female">♀️ Feminino</button>
+                </div>
+                <div class="sintomas-search-box">
+                    <input type="text" id="sintomas-search" placeholder="Buscar sintoma... (ex: dispneia, cefaleia, febre)">
+                </div>
+            </div>
+            <div id="sintomas-guide-content" class="sintomas-guide-content"></div>
+        </div><!-- Fim tab-sintomas -->
+
+        <!-- ABA: Calculadoras Clínicas -->
+        <div id="tab-calculadoras" class="tab-content">
+            <div class="calc-header">
+                <h2>🧮 Calculadoras Clínicas</h2>
+                <p>Escores validados para apoio à decisão clínica. Baseado em guidelines internacionais.</p>
+            </div>
+            <div id="calc-list" class="calc-list"></div>
+            <div id="calc-active" class="calc-active hidden"></div>
+        </div><!-- Fim tab-calculadoras -->
+
+        <!-- ABA: Fluxogramas de Decisão + Condutas -->
+        <div id="tab-fluxogramas" class="tab-content">
+            <div class="flow-header">
+                <h2>📊 Fluxogramas de Decisão e Condutas</h2>
+                <p>Algoritmos interativos de decisão clínica com conduta inicial (ABCDE). Siga as perguntas para chegar ao diagnóstico e à conduta.</p>
+            </div>
+            <div id="flow-list" class="flow-list"></div>
+            <div id="flow-active" class="flow-active hidden"></div>
+        </div><!-- Fim tab-fluxogramas -->
+
+        <!-- ABA: Casos Clínicos Simulados -->
+        <div id="tab-casos" class="tab-content">
+            <div class="cases-header">
+                <h2>📚 Casos Clínicos Simulados</h2>
+                <p>Cenários reais de emergência. Analise o caso, classifique o risco e decida a conduta.</p>
+            </div>
+            <div id="cases-list" class="cases-list"></div>
+            <div id="cases-active" class="cases-active hidden"></div>
+        </div><!-- Fim tab-casos -->
+
+        <!-- ABA: Testes de Conhecimento -->
+        <div id="tab-testes" class="tab-content">
+            <div class="quiz-header">
+                <h2>📝 Testes de Conhecimento</h2>
+                <p>Teste seus conhecimentos em triagem médica e protocolos de urgência. Baseado em Harrison — Medicina Interna e Protocolo de Manchester.</p>
+            </div>
+
+            <!-- Filtro de Categorias -->
+            <div class="quiz-categories">
+                <button class="quiz-cat-btn active" data-category="all">Todos</button>
+                <button class="quiz-cat-btn" data-category="urgencia">🚨 Urgências</button>
+                <button class="quiz-cat-btn" data-category="cardiovascular">❤️ Cardiovascular</button>
+                <button class="quiz-cat-btn" data-category="neurologico">🧠 Neurológico</button>
+                <button class="quiz-cat-btn" data-category="respiratorio">🫁 Respiratório</button>
+                <button class="quiz-cat-btn" data-category="infecto">🦟 Infectologia</button>
+                <button class="quiz-cat-btn" data-category="endocrino">⚖️ Endócrino</button>
+                <button class="quiz-cat-btn" data-category="gastrointestinal">🫃 Gastrointestinal</button>
+                <button class="quiz-cat-btn" data-category="manchester">🏥 Manchester</button>
+            </div>
+
+            <!-- Área do Quiz -->
+            <div id="quiz-area">
+                <div id="quiz-list" class="quiz-list"></div>
+                <div id="quiz-active" class="quiz-active hidden">
+                    <div class="quiz-progress">
+                        <span id="quiz-progress-text">Questão 1 de 5</span>
+                        <div class="quiz-progress-bar">
+                            <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
+                        </div>
+                    </div>
+                    <div id="quiz-question" class="quiz-question"></div>
+                    <div id="quiz-options" class="quiz-options"></div>
+                    <div id="quiz-feedback" class="quiz-feedback hidden"></div>
+                    <button id="quiz-next-btn" class="quiz-next-btn hidden">Próxima Questão →</button>
+                </div>
+                <div id="quiz-result" class="quiz-result hidden">
+                    <h3 id="quiz-result-title"></h3>
+                    <p id="quiz-result-score"></p>
+                    <div id="quiz-result-details"></div>
+                    <button id="quiz-retry-btn" class="quiz-retry-btn">Refazer Teste</button>
+                    <button id="quiz-back-btn" class="quiz-back-btn">← Voltar aos Testes</button>
+                </div>
+            </div>
+        </div><!-- Fim tab-testes -->
+
         <footer class="disclaimer">
             <p><strong>⚠️ Cláusula de Responsabilidade:</strong> Este sistema é uma ferramenta de apoio acadêmico e não substitui a avaliação de um profissional de saúde qualificado. Em caso de emergência, ligue <strong>SAMU 192</strong> ou <strong>Bombeiros 193</strong>.</p>
-            <p><small>Fonte: <a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z" target="_blank">Ministério da Saúde — Saúde de A a Z</a> | Referências: 7ª Diretriz Brasileira de Hipertensão Arterial, Manuais MSD, Protocolo de Manchester.</small></p>
+            <p><small>Fontes: <a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z" target="_blank">Ministério da Saúde — Saúde de A a Z</a> | Harrison — Princípios de Medicina Interna (22ª ed.) | 7ª Diretriz Brasileira de Hipertensão Arterial | Manuais MSD | Protocolo de Manchester | Sepsis-3 (JAMA 2016).</small></p>
         </footer>
     </div>
 
     <script src="script.js"></script>
+    <script src="quiz.js"></script>
+    <script src="sintomas-guide.js"></script>
+    <script src="calculadoras.js"></script>
+    <script src="fluxogramas.js"></script>
+    <script src="casos-clinicos.js"></script>
 </body>
 </html>

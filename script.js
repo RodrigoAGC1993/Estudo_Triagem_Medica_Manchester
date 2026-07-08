@@ -1,7 +1,13 @@
 /**
  * Sistema de Triagem Médica - Baseado no Protocolo de Manchester
- * Fonte oficial: Ministério da Saúde - Saúde de A a Z
- * https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z
+ * 
+ * FONTES:
+ * - Ministério da Saúde - Saúde de A a Z (https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z)
+ * - Harrison — Princípios de Medicina Interna, 22ª ed. (McGraw-Hill, 2025)
+ * - 7ª Diretriz Brasileira de Hipertensão Arterial
+ * - Sepsis-3: Third International Consensus (JAMA, 2016) — Critérios qSOFA
+ * - Manuais MSD para Profissionais de Saúde
+ * - Protocolo de Manchester — Sistema de Triagem
  * 
  * ATENÇÃO: Este sistema é apenas uma ferramenta de apoio acadêmico.
  * Não substitui o julgamento clínico de um profissional de saúde.
@@ -70,6 +76,56 @@ function displayResult(recomendacao) {
         tituloResultado.textContent = "✅ Especialidade Recomendada:";
     }
     resultadoDiv.classList.remove('hidden');
+
+    // Integração: link para Guia de Sintomas
+    let linkContainer = document.getElementById('resultado-links');
+    if (!linkContainer) {
+        linkContainer = document.createElement('div');
+        linkContainer.id = 'resultado-links';
+        linkContainer.className = 'resultado-links';
+        resultadoDiv.appendChild(linkContainer);
+    }
+    const keyword = extractSearchKeyword(recomendacao.especialidade);
+    if (keyword) {
+        linkContainer.innerHTML = `<button class="resultado-link-btn" onclick="navigateToSintomas('${keyword}')">🔍 Ver diagnósticos relacionados no Guia de Sintomas →</button>`;
+    } else {
+        linkContainer.innerHTML = '';
+    }
+}
+
+function extractSearchKeyword(especialidade) {
+    const lower = especialidade.toLowerCase();
+    if (lower.includes('avc')) return 'cefaleia';
+    if (lower.includes('infarto') || lower.includes('coronariana') || lower.includes('cardiolog')) return 'dor torácica';
+    if (lower.includes('embolia pulmonar') || lower.includes('tromboembolismo')) return 'dispneia';
+    if (lower.includes('meningite') || lower.includes('meningococ')) return 'febre';
+    if (lower.includes('sepse')) return 'febre';
+    if (lower.includes('anafilaxia')) return 'edema';
+    if (lower.includes('cetoacidose') || lower.includes('endocrinol')) return 'fadiga';
+    if (lower.includes('abdome') || lower.includes('gastro') || lower.includes('cirurg')) return 'dor abdominal';
+    if (lower.includes('pneumo') || lower.includes('respirat')) return 'dispneia';
+    if (lower.includes('neurolog')) return 'cefaleia';
+    if (lower.includes('psiquiat')) return 'fadiga';
+    if (lower.includes('ginecol')) return 'sangramento';
+    if (lower.includes('urolog')) return 'disúria';
+    if (lower.includes('oftalmol')) return 'olho';
+    if (lower.includes('dermatol')) return 'prurido';
+    return '';
+}
+
+function navigateToSintomas(keyword) {
+    // Switch to sintomas tab
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-tab="sintomas"]').classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-sintomas').classList.add('active');
+    // Set search
+    const searchInput = document.getElementById('sintomas-search');
+    if (searchInput) {
+        searchInput.value = keyword;
+        searchInput.dispatchEvent(new Event('input'));
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function avaliarPressao() {
@@ -114,15 +170,57 @@ function avaliarTemperatura() {
 // ============================================================
 // REGRAS DE URGÊNCIA (Red Flags)
 // Baseado em: Protocolo de Manchester + Ministério da Saúde
+// Complementado com: Harrison — Princípios de Medicina Interna
 // ============================================================
 function checarUrgencias(sintomas, sistolica, diastolica, temperatura, idade) {
 
-    // AVC - Fonte: gov.br/saude - Acidente Vascular Cerebral
+    // === ANAFILAXIA (Harrison, Cap. Anafilaxia) ===
+    // Reação alérgica sistêmica potencialmente fatal com envolvimento multissistêmico
+    if (sintomas.includes('edema_face_labios') && (sintomas.includes('falta_ar') || sintomas.includes('estridor') || sintomas.includes('urticaria_generalizada'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Anafilaxia (SAMU 192)',
+            observacao: 'Inchaço de face/lábios/língua com dificuldade respiratória ou urticária generalizada sugere reação anafilática. Risco de obstrução de vias aéreas. Acione o SAMU 192 imediatamente. Se disponível, use adrenalina autoinjetável.',
+            urgente: true
+        };
+    }
+
+    // AVC - Fonte: gov.br/saude + Harrison Cap. Doenças Cerebrovasculares
     // Sinais: confusão mental, alteração fala, fraqueza unilateral, visão turva, cefaleia súbita
     if (sintomas.includes('confusao_mental') && (sintomas.includes('fraqueza_unilateral') || sintomas.includes('alteracao_fala'))) {
         return {
             especialidade: 'EMERGÊNCIA — Suspeita de AVC (SAMU 192)',
-            observacao: 'Sinais sugestivos de Acidente Vascular Cerebral. Ligue imediatamente para o SAMU 192 ou Bombeiros 193. O tempo é crítico para o tratamento.',
+            observacao: 'Sinais sugestivos de Acidente Vascular Cerebral. Ligue imediatamente para o SAMU 192 ou Bombeiros 193. O tempo é crítico — a janela terapêutica para trombólise é de até 4,5h (Harrison).',
+            urgente: true
+        };
+    }
+
+    // AVC — padrão alternativo (Harrison): cefaleia súbita + perda de equilíbrio + visão turva
+    if (sintomas.includes('dor_cabeca') && sintomas.includes('perda_equilibrio') && 
+        (sintomas.includes('visao_turva') || sintomas.includes('fraqueza_unilateral'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de AVC (SAMU 192)',
+            observacao: 'Cefaleia intensa súbita com alteração de equilíbrio e déficit neurológico sugere evento cerebrovascular agudo (Harrison). Acione o SAMU 192.',
+            urgente: true
+        };
+    }
+
+    // === MENINGITE (Harrison, Cap. Meningite Bacteriana Aguda) ===
+    // Tríade clássica: febre + rigidez de nuca + alteração mental
+    if (sintomas.includes('febre') && sintomas.includes('rigidez_nuca') && 
+        (sintomas.includes('confusao_mental') || sintomas.includes('fotofobia'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Meningite (SAMU 192)',
+            observacao: 'Febre com rigidez de nuca e fotofobia/confusão mental são sinais clássicos de meningite (Harrison). Condição potencialmente fatal que requer antibioticoterapia imediata. Acione o SAMU 192.',
+            urgente: true
+        };
+    }
+
+    // Meningite — com petéquias (meningococcemia)
+    if (sintomas.includes('febre') && sintomas.includes('petequias_purpura') && 
+        (sintomas.includes('rigidez_nuca') || sintomas.includes('confusao_mental'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Meningococcemia (SAMU 192)',
+            observacao: 'Febre com petéquias/púrpura e sinais meníngeos sugerem meningococcemia — infecção fulminante com alta mortalidade (Harrison). Tratamento em minutos é crucial. SAMU 192 imediatamente.',
             urgente: true
         };
     }
@@ -136,11 +234,40 @@ function checarUrgencias(sintomas, sistolica, diastolica, temperatura, idade) {
         };
     }
 
-    // Infarto / Síndrome Coronariana Aguda
+    // === EMBOLIA PULMONAR (Harrison, Cap. Embolia Pulmonar) ===
+    // Dispneia súbita + dor pleurítica + taquicardia; fatores de risco: imobilização, pós-operatório
+    if (sintomas.includes('falta_ar') && sintomas.includes('dor_pleuritica') && 
+        (sintomas.includes('palpitacoes') || sintomas.includes('desmaio_sincope') || sintomas.includes('hemoptise'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Embolia Pulmonar (Pronto-Socorro)',
+            observacao: 'Dispneia súbita com dor pleurítica e taquicardia/síncope pode indicar tromboembolismo pulmonar (Harrison). Condição potencialmente fatal que requer anticoagulação imediata. Procure emergência agora.',
+            urgente: true
+        };
+    }
+
+    // TEP com dor em panturrilha (possível TVP → TEP)
+    if (sintomas.includes('falta_ar') && sintomas.includes('dor_panturrilha') && 
+        (sintomas.includes('dor_pleuritica') || sintomas.includes('palpitacoes'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Tromboembolismo (Pronto-Socorro)',
+            observacao: 'Dor em panturrilha com dispneia e dor torácica sugere trombose venosa profunda com possível embolia pulmonar (Harrison). Risco de morte súbita. Procure emergência imediatamente.',
+            urgente: true
+        };
+    }
+
+    // Infarto / Síndrome Coronariana Aguda (Harrison, Cap. Cardiopatia Isquêmica)
     if (sintomas.includes('dor_peito') && (sintomas.includes('falta_ar') || sintomas.includes('sudorese_fria'))) {
         return {
             especialidade: 'EMERGÊNCIA — Suspeita de Infarto (SAMU 192)',
-            observacao: 'Dor no peito associada a falta de ar e/ou sudorese fria pode indicar infarto agudo do miocárdio. Acione o SAMU 192 imediatamente.',
+            observacao: 'Dor no peito associada a falta de ar e/ou sudorese fria pode indicar infarto agudo do miocárdio. Harrison classifica em 3 categorias: isquemia miocárdica, causas cardiopulmonares e não-cardiopulmonares. Acione o SAMU 192.',
+            urgente: true
+        };
+    }
+
+    if (sintomas.includes('dor_peito') && sintomas.includes('palpitacoes') && sintomas.includes('tontura_vertigem')) {
+        return {
+            especialidade: 'EMERGÊNCIA — Arritmia / Síndrome Coronariana (Pronto-Socorro)',
+            observacao: 'Dor torácica com palpitações e tontura pode indicar arritmia grave ou isquemia miocárdica (Harrison). Risco de parada cardiorrespiratória. Procure emergência.',
             urgente: true
         };
     }
@@ -148,16 +275,65 @@ function checarUrgencias(sintomas, sistolica, diastolica, temperatura, idade) {
     if (sintomas.includes('dor_peito')) {
         return {
             especialidade: 'URGÊNCIA — Cardiologista / Emergência',
-            observacao: 'Dor ou aperto no peito é um sinal de alerta que requer avaliação médica imediata para descartar causas graves como infarto.',
+            observacao: 'Dor ou aperto no peito é um sinal de alerta que requer avaliação médica imediata para descartar causas graves como infarto, dissecção aórtica ou TEP (Harrison).',
             urgente: true
         };
     }
 
-    // Crise Hipertensiva - Fonte: gov.br/saude - Hipertensão
+    // Crise Hipertensiva - Fonte: gov.br/saude + Harrison
     if ((sistolica >= 180 || diastolica >= 110) && (sintomas.includes('dor_cabeca') || sintomas.includes('visao_turva') || sintomas.includes('confusao_mental'))) {
         return {
             especialidade: 'EMERGÊNCIA — Crise Hipertensiva (Pronto-Socorro)',
-            observacao: 'Pressão arterial em nível de crise com sintomas neurológicos. Requer atendimento imediato — risco de AVC.',
+            observacao: 'Pressão arterial em nível de crise com sintomas neurológicos. Harrison diferencia urgência hipertensiva (sem lesão de órgão-alvo) de emergência hipertensiva (com lesão). Requer atendimento imediato — risco de AVC.',
+            urgente: true
+        };
+    }
+
+    // === SEPSE (Harrison, Cap. Sepse e Choque Séptico / Critérios qSOFA) ===
+    // qSOFA: FR ≥22, PAS ≤100, alteração mental — se ≥2, alto risco de sepse
+    if (sintomas.includes('febre') && sintomas.includes('confusao_mental') && 
+        (sintomas.includes('respiracao_rapida') || (sistolica > 0 && sistolica <= 100))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Sepse (Pronto-Socorro)',
+            observacao: 'Febre com confusão mental e taquipneia/hipotensão preenche critérios qSOFA positivo (Harrison/Sepsis-3). Sepse é uma emergência com alta mortalidade — cada hora sem tratamento aumenta o risco. Procure emergência imediatamente.',
+            urgente: true
+        };
+    }
+
+    // Sepse — padrão com hipotensão
+    if (sintomas.includes('febre') && sintomas.includes('hipotensao_sintomatica') && 
+        (sintomas.includes('cansaco_fadiga') || sintomas.includes('respiracao_rapida'))) {
+        return {
+            especialidade: 'URGÊNCIA — Suspeita de Infecção Grave / Sepse (Pronto-Socorro)',
+            observacao: 'Febre com sinais de hipotensão e taquipneia podem indicar sepse em evolução (Harrison). A identificação precoce e o início de antibióticos nas primeiras horas são fundamentais.',
+            urgente: true
+        };
+    }
+
+    // === CETOACIDOSE DIABÉTICA (Harrison, Cap. Diabetes Mellitus) ===
+    if (sintomas.includes('sede_excessiva') && sintomas.includes('halito_cetonico') && 
+        (sintomas.includes('nausea_vomito') || sintomas.includes('dor_abdominal') || sintomas.includes('respiracao_rapida'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Cetoacidose Diabética (Pronto-Socorro)',
+            observacao: 'Sede intensa com hálito cetônico (frutado), náusea e respiração rápida (Kussmaul) sugerem cetoacidose diabética (Harrison). Complicação potencialmente fatal do diabetes que requer reposição de insulina e fluidos IV imediata.',
+            urgente: true
+        };
+    }
+
+    // === ABDOME AGUDO (Harrison, Cap. Dor Abdominal) ===
+    if (sintomas.includes('abdome_rigido') && sintomas.includes('dor_abdominal_subita')) {
+        return {
+            especialidade: 'EMERGÊNCIA — Abdome Agudo (Pronto-Socorro / Cirurgia)',
+            observacao: 'Abdome rígido ("em tábua") com dor súbita intensa sugere peritonite — possível perfuração visceral, apendicite complicada ou isquemia mesentérica (Harrison). Condição cirúrgica de emergência.',
+            urgente: true
+        };
+    }
+
+    if (sintomas.includes('dor_abdominal_subita') && sintomas.includes('sudorese_fria') && 
+        (sintomas.includes('nausea_vomito') || sintomas.includes('desmaio_sincope'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Abdome Agudo (Pronto-Socorro)',
+            observacao: 'Dor abdominal súbita com sudorese e sinais de choque pode indicar ruptura de aneurisma, gravidez ectópica rota ou perfuração intestinal (Harrison). Procure emergência imediatamente.',
             urgente: true
         };
     }
@@ -166,13 +342,12 @@ function checarUrgencias(sintomas, sistolica, diastolica, temperatura, idade) {
     if (sintomas.includes('desmaio_sincope')) {
         return {
             especialidade: 'URGÊNCIA — Pronto-Socorro',
-            observacao: 'A perda de consciência (desmaio) deve sempre ser investigada em um serviço de emergência.',
+            observacao: 'A perda de consciência (desmaio) deve sempre ser investigada em emergência. Harrison classifica: neurocardiogênica, cardíaca (arritmia/estrutural) e ortostática. Síncope cardíaca tem risco de morte súbita.',
             urgente: true
         };
     }
 
     // Dengue Grave - Fonte: gov.br/saude - Dengue
-    // Sinais de alarme: dor abdominal intensa, vômitos frequentes, tontura/desmaio, sangramento
     if (sintomas.includes('febre') && sintomas.includes('dor_retro_ocular') && sintomas.includes('dor_muscular') &&
         (sintomas.includes('sangramento') || sintomas.includes('dor_abdominal'))) {
         return {
@@ -186,17 +361,36 @@ function checarUrgencias(sintomas, sistolica, diastolica, temperatura, idade) {
     if (temperatura >= 41) {
         return {
             especialidade: 'EMERGÊNCIA — Hipertermia Grave (Pronto-Socorro)',
-            observacao: 'Temperatura acima de 41°C é uma emergência médica. Resfrie o corpo e procure atendimento imediato.',
+            observacao: 'Temperatura acima de 41°C é uma emergência médica (Harrison: risco de desnaturação proteica e falência orgânica). Resfrie o corpo e procure atendimento imediato.',
+            urgente: true
+        };
+    }
+
+    // === CRISE TIREOTÓXICA / TEMPESTADE TIREOIDIANA (Harrison, Cap. Tireoide) ===
+    if (sintomas.includes('febre') && sintomas.includes('palpitacoes') && sintomas.includes('confusao_mental') &&
+        (sintomas.includes('nausea_vomito') || sintomas.includes('diarreia'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Suspeita de Tempestade Tireoidiana (Pronto-Socorro)',
+            observacao: 'Febre alta + taquicardia + confusão mental + sintomas GI em paciente com possível hipertireoidismo sugere crise tireotóxica (Harrison). Mortalidade de 8-25% mesmo com tratamento. Emergência endocrinológica.',
             urgente: true
         };
     }
 
     // Dificuldade respiratória grave (possível crise asmática grave)
-    // Fonte: gov.br/saude - Asma
+    // Fonte: gov.br/saude - Asma + Harrison
     if (sintomas.includes('falta_ar') && sintomas.includes('chiado_peito') && sintomas.includes('cianose')) {
         return {
             especialidade: 'EMERGÊNCIA — Crise Respiratória (Pronto-Socorro)',
-            observacao: 'Dificuldade respiratória com chiado e cianose (lábios/extremidades roxos) indica insuficiência respiratória. Procure emergência imediatamente.',
+            observacao: 'Dificuldade respiratória com chiado e cianose (lábios/extremidades roxos) indica insuficiência respiratória. Harrison: cianose indica SpO2 < 85%. Procure emergência imediatamente.',
+            urgente: true
+        };
+    }
+
+    // === ESTRIDOR / OBSTRUÇÃO DE VIAS AÉREAS (Harrison) ===
+    if (sintomas.includes('estridor') && (sintomas.includes('falta_ar') || sintomas.includes('cianose'))) {
+        return {
+            especialidade: 'EMERGÊNCIA — Obstrução de Vias Aéreas (SAMU 192)',
+            observacao: 'Estridor (ruído inspiratório) com dispneia indica obstrução de vias aéreas superiores (Harrison). Pode evoluir para asfixia. Acione SAMU 192 imediatamente.',
             urgente: true
         };
     }
@@ -328,6 +522,23 @@ function recomendarEspecialidade(sintomas, sistolica, diastolica, temperatura, i
         'dor_lombar': { 'Nefrologista': 2, 'Urologista': 2, 'Ortopedista': 1 },
         'urina_escura': { 'Nefrologista': 2, 'Gastroenterologista / Hepatologista': 2 },
         'urina_espumosa': { 'Nefrologista': 3 },
+        'oliguria': { 'Nefrologista': 3, 'Cardiologista': 1 },
+
+        // === Sinais de Alarme / Gravidade (Harrison - Medicina Interna) ===
+        'rigidez_nuca': { 'Neurologista': 4, 'Clínico Geral / Infectologista': 3 },
+        'fotofobia': { 'Neurologista': 3, 'Clínico Geral / Infectologista': 2 },
+        'petequias_purpura': { 'Hematologista': 3, 'Clínico Geral / Infectologista': 3 },
+        'dor_panturrilha': { 'Angiologista / Cirurgião Vascular': 3, 'Ortopedista': 1 },
+        'dor_pleuritica': { 'Pneumologista': 3, 'Cardiologista': 2 },
+        'hemoptise': { 'Pneumologista': 4, 'Oncologista': 2 },
+        'abdome_rigido': { 'Cirurgião Geral': 5, 'Gastroenterologista': 2 },
+        'dor_abdominal_subita': { 'Cirurgião Geral': 4, 'Gastroenterologista': 2 },
+        'halito_cetonico': { 'Endocrinologista': 4 },
+        'desidratacao_grave': { 'Clínico Geral / Infectologista': 2, 'Nefrologista': 2 },
+        'edema_face_labios': { 'Alergista / Imunologista': 4, 'Otorrinolaringologista': 2 },
+        'urticaria_generalizada': { 'Alergista / Imunologista': 3, 'Dermatologista': 2 },
+        'estridor': { 'Otorrinolaringologista': 4, 'Pneumologista': 3 },
+        'hipotensao_sintomatica': { 'Cardiologista': 2, 'Clínico Geral / Infectologista': 2 },
 
         // === Ginecológicos ===
         'colica_menstrual': { 'Ginecologista': 2 },
@@ -417,6 +628,95 @@ function recomendarEspecialidade(sintomas, sistolica, diastolica, temperatura, i
     // DOENÇA RENAL: edema + urina espumosa + fadiga
     if (sintomas.includes('edema_membros') && sintomas.includes('urina_espumosa')) {
         scores['Nefrologista'] = (scores['Nefrologista'] || 0) + 5;
+    }
+
+    // === REGRAS COMBINADAS ADICIONAIS (Harrison — Medicina Interna) ===
+
+    // INSUFICIÊNCIA CARDÍACA DESCOMPENSADA (Harrison, Cap. IC):
+    // Dispneia + edema + fadiga + ortopneia
+    if (sintomas.includes('falta_ar') && sintomas.includes('edema_membros') && sintomas.includes('cansaco_fadiga')) {
+        scores['Cardiologista'] = (scores['Cardiologista'] || 0) + 5;
+    }
+
+    // TROMBOSE VENOSA PROFUNDA (Harrison, Cap. TEV):
+    // Dor em panturrilha unilateral + edema + calor local
+    if (sintomas.includes('dor_panturrilha') && sintomas.includes('edema_membros')) {
+        scores['Angiologista / Cirurgião Vascular'] = (scores['Angiologista / Cirurgião Vascular'] || 0) + 5;
+    }
+
+    // PANCREATITE AGUDA (Harrison, Cap. Pancreatite):
+    // Dor abdominal intensa epigástrica + náusea/vômito + febre
+    if (sintomas.includes('dor_abdominal') && sintomas.includes('nausea_vomito') && 
+        (sintomas.includes('febre') || sintomas.includes('ictericia'))) {
+        scores['Gastroenterologista'] = (scores['Gastroenterologista'] || 0) + 4;
+        scores['Cirurgião Geral'] = (scores['Cirurgião Geral'] || 0) + 2;
+    }
+
+    // MENINGISMO / MENINGITE (Harrison, Cap. Meningite):
+    // Cefaleia + rigidez de nuca + febre
+    if (sintomas.includes('dor_cabeca') && sintomas.includes('rigidez_nuca') && sintomas.includes('febre')) {
+        scores['Neurologista'] = (scores['Neurologista'] || 0) + 5;
+        scores['Clínico Geral / Infectologista'] = (scores['Clínico Geral / Infectologista'] || 0) + 4;
+    }
+
+    // HIPOTIREOIDISMO GRAVE / MIXEDEMA (Harrison, Cap. Tireoide):
+    // Ganho de peso + intolerância ao frio + fadiga + constipação
+    if (sintomas.includes('ganho_peso_inexplicado') && sintomas.includes('intolerancia_frio_calor') && 
+        (sintomas.includes('cansaco_fadiga') || sintomas.includes('constipacao'))) {
+        scores['Endocrinologista'] = (scores['Endocrinologista'] || 0) + 5;
+    }
+
+    // HIPERTIREOIDISMO (Harrison, Cap. Tireoide):
+    // Perda de peso + palpitações + intolerância ao calor + tremores
+    if (sintomas.includes('perda_peso') && sintomas.includes('palpitacoes') && 
+        (sintomas.includes('intolerancia_frio_calor') || sintomas.includes('tremores'))) {
+        scores['Endocrinologista'] = (scores['Endocrinologista'] || 0) + 5;
+    }
+
+    // LINFOMA / NEOPLASIA HEMATOLÓGICA (Harrison, Cap. Linfomas):
+    // Linfonodomegalia + sudorese noturna + perda de peso + febre (sintomas B)
+    if (sintomas.includes('ganglios_inchados') && sintomas.includes('sudorese_noturna') && 
+        (sintomas.includes('perda_peso') || sintomas.includes('febre'))) {
+        scores['Oncologista / Hematologista'] = (scores['Oncologista / Hematologista'] || 0) + 5;
+    }
+
+    // DOENÇA INFLAMATÓRIA INTESTINAL (Harrison, Cap. DII):
+    // Diarreia sanguinolenta + dor abdominal + perda de peso
+    if (sintomas.includes('diarreia_sanguinolenta') && sintomas.includes('dor_abdominal') && 
+        (sintomas.includes('perda_peso') || sintomas.includes('febre'))) {
+        scores['Gastroenterologista'] = (scores['Gastroenterologista'] || 0) + 5;
+    }
+
+    // ANEMIA GRAVE (Harrison, Cap. Anemias):
+    // Palidez + fadiga + taquicardia + dispneia ao esforço
+    if (sintomas.includes('palidez') && sintomas.includes('cansaco_fadiga') && 
+        (sintomas.includes('palpitacoes') || sintomas.includes('falta_ar'))) {
+        scores['Hematologista'] = (scores['Hematologista'] || 0) + 4;
+    }
+
+    // INSUFICIÊNCIA ADRENAL / CRISE ADDISONIANA (Harrison, Cap. Adrenal):
+    // Hipotensão + fadiga + náusea + hiperpigmentação + perda de peso
+    if (sintomas.includes('hipotensao_sintomatica') && sintomas.includes('cansaco_fadiga') && 
+        (sintomas.includes('nausea_vomito') || sintomas.includes('perda_peso'))) {
+        scores['Endocrinologista'] = (scores['Endocrinologista'] || 0) + 4;
+    }
+
+    // GLOMERULONEFRITE (Harrison, Cap. Doenças Glomerulares):
+    // Urina escura + edema + hipertensão + urina espumosa
+    if (sintomas.includes('urina_escura') && sintomas.includes('edema_membros') && sintomas.includes('urina_espumosa')) {
+        scores['Nefrologista'] = (scores['Nefrologista'] || 0) + 5;
+    }
+
+    // APENDICITE (Harrison, Cap. Apendicite):
+    // Dor abdominal (periumbilical → FID) + náusea + febre baixa
+    if (sintomas.includes('dor_abdominal') && sintomas.includes('nausea_vomito') && sintomas.includes('febre') &&
+        !sintomas.includes('diarreia')) {
+        scores['Cirurgião Geral'] = (scores['Cirurgião Geral'] || 0) + 3;
+    }
+
+    // URTICÁRIA / ANGIOEDEMA (Harrison, Cap. Alergia):
+    if (sintomas.includes('urticaria_generalizada') && sintomas.includes('coceira')) {
+        scores['Alergista / Imunologista'] = (scores['Alergista / Imunologista'] || 0) + 4;
     }
 
     // === ALERTA para pensamentos suicidas ===
