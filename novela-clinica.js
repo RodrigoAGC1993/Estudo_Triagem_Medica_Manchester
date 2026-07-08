@@ -24,12 +24,12 @@ const novelaCases = [
         },
         'first_action': {
             type: 'choice',
-            text: 'O paciente está diante de você. Primeiro passo:',
+            text: 'O paciente está diante de você, pálido e sudoreico. Qual abordagem inicial?',
             options: [
-                { text: 'Monitor cardíaco + O2 + acesso venoso + ECG em 10 min', next: 'correct_start', points: 3 },
-                { text: 'Anamnese completa detalhada + exame físico minucioso antes de qualquer coisa', next: 'anamnesis_delay', points: 0 },
-                { text: 'D-dímero + Rx tórax + enzimas cardíacas → avaliar com resultados', next: 'labs_first', points: -1 },
-                { text: 'Nitrato sublingual + Morfina IV para aliviar a dor e depois investigar', next: 'nitrate_first', points: 1 }
+                { text: 'Analgesia imediata com Tramadol 100mg IV + Metoclopramida 10mg IV, depois avaliar com calma', next: 'nitrate_first', points: -1 },
+                { text: 'Monitorização cardíaca + oximetria + acesso venoso periférico + ECG de 12 derivações em até 10 min', next: 'correct_start', points: 3 },
+                { text: 'Solicitar hemograma, troponina, D-dímero, PCR, função renal e Rx de tórax PA — avaliar com resultados', next: 'labs_first', points: -1 },
+                { text: 'Anamnese estruturada completa com revisão de sistemas + exame físico segmentar antes de qualquer conduta', next: 'anamnesis_delay', points: 0 }
             ]
         },
         'correct_start': {
@@ -40,22 +40,22 @@ const novelaCases = [
         },
         'reperfusion_choice': {
             type: 'choice',
-            text: 'IAMCSST confirmado. Seu hospital tem hemodinâmica 24h disponível em 30 min. A dor começou há ~50 minutos. Conduta:',
+            text: 'IAMCSST de parede anterior confirmado no ECG. Início dos sintomas há 50 minutos. Seu hospital dispõe de sala de hemodinâmica com equipe de sobreaviso. Conduta de reperfusão:',
             options: [
-                { text: 'AAS + Ticagrelor + Heparina + cateterismo primário (meta porta-balão < 90 min)', next: 'cath_primary', points: 3 },
-                { text: 'AAS + Clopidogrel + Tenecteplase (trombólise) + transferir depois para coronariografia', next: 'thrombolysis_path', points: 1 },
-                { text: 'AAS + Clopidogrel + Heparina + troponina seriada para confirmar extensão antes de decidir', next: 'troponin_delay', points: -1 },
-                { text: 'AAS + Enoxaparina + Nitroglicerina IV + betabloqueador → reavaliar em 6h com novo ECG', next: 'conservative_path', points: -2 }
+                { text: 'AAS 300mg + Clopidogrel 300mg + Enoxaparina SC + manter em observação na UCO com troponina seriada a cada 3h', next: 'conservative_path', points: -2 },
+                { text: 'AAS 300mg + Ticagrelor 180mg + Heparina não-fracionada IV + ativar equipe de hemodinâmica para angioplastia primária', next: 'cath_primary', points: 3 },
+                { text: 'AAS 300mg + Clopidogrel 600mg + Tenecteplase IV ajustada ao peso + encaminhar para coronariografia em 3-24h', next: 'thrombolysis_path', points: 1 },
+                { text: 'AAS 300mg + Ticagrelor 180mg + Enoxaparina + Nitroglicerina IV contínua + betabloqueador VO → cateterismo eletivo em 48-72h', next: 'conservative_path', points: -1 }
             ]
         },
         'cath_primary': {
             type: 'choice',
-            text: 'Hemodinâmica ativada. Enquanto prepara o paciente para subir, qual medida adicional é CONTRAINDICADA neste momento?',
+            text: 'Hemodinâmica ativada. Paciente em preparo. PA 92/55 mmHg, FC 108 bpm. Enquanto aguarda transferência para a sala, qual prescrição adicional é adequada?',
             options: [
-                { text: 'Morfina IV para dor refratária', next: 'cath_done_good', points: 1 },
-                { text: 'Metoprolol IV agora (PA sistólica 92 mmHg, FC 108)', next: 'betablocker_error', points: -2 },
-                { text: 'Atorvastatina 80mg VO', next: 'cath_done_good', points: 2 },
-                { text: 'Nitroglicerina sublingual', next: 'nitrate_hypotension', points: -1 }
+                { text: 'Metoprolol 5mg IV lento a cada 5 min até FC < 80 — reduzir consumo miocárdico de O2', next: 'betablocker_error', points: -2 },
+                { text: 'Atorvastatina 80mg VO + manter Heparina não-fracionada conforme TTPa — sem betabloqueador por enquanto (PAS < 100)', next: 'cath_done_good', points: 3 },
+                { text: 'Nitroglicerina 5mcg/min IV com titulação a cada 5 min para controle da dor — alvo PAS > 90', next: 'nitrate_hypotension', points: -1 },
+                { text: 'Dobutamina 5mcg/kg/min IV para suporte inotrópico preventivo — PA limítrofe pode evoluir para choque', next: 'cath_done_delayed', points: 0 }
             ]
         },
         'cath_done_good': {
@@ -66,12 +66,12 @@ const novelaCases = [
         },
         'post_cath_management': {
             type: 'choice',
-            text: 'Paciente pós-angioplastia primária com sucesso. Prescrição de UTI coronariana — qual esquema é o mais adequado?',
+            text: 'Angioplastia primária bem-sucedida. Stent farmacológico em DA. Paciente estável na UCO. Prescrição de prevenção secundária:',
             options: [
-                { text: 'AAS + Ticagrelor 12 meses + Betabloqueador + IECA + Estatina de alta potência', next: 'ending_excellent', points: 3 },
-                { text: 'AAS + Ticagrelor 1 mês + Estatina apenas se LDL > 130', next: 'ending_good_suboptimal', points: 1 },
-                { text: 'Clopidogrel isolado + anti-hipertensivo prévio + sinvastatina 20mg', next: 'ending_good_suboptimal', points: 0 },
-                { text: 'AAS + Ticagrelor + Warfarina (tripla anticoagulação)', next: 'ending_bleeding', points: -1 }
+                { text: 'AAS 100mg/dia + Ticagrelor 90mg 12/12h por 12 meses + Metoprolol 25mg 12/12h + Ramipril 2,5mg/dia + Atorvastatina 80mg/dia', next: 'ending_excellent', points: 3 },
+                { text: 'AAS 100mg/dia + Clopidogrel 75mg/dia por 3 meses + Anlodipino 5mg/dia + Sinvastatina 20mg/dia', next: 'ending_good_suboptimal', points: 0 },
+                { text: 'AAS 100mg/dia + Ticagrelor 90mg 12/12h por 12 meses + Ramipril 2,5mg/dia + Rosuvastatina 40mg/dia (sem betabloqueador — FC normal agora)', next: 'ending_good_suboptimal', points: 1 },
+                { text: 'AAS 100mg/dia + Ticagrelor 90mg 12/12h por 12 meses + Rivaroxabana 2,5mg 12/12h + Metoprolol 50mg + Atorvastatina 80mg', next: 'ending_bleeding', points: -1 }
             ]
         },
         'ending_excellent': {
@@ -121,12 +121,12 @@ const novelaCases = [
         },
         'post_lysis_decision': {
             type: 'choice',
-            text: 'Trombólise realizada. Resolução parcial do supra ST (50%). Dor melhorou 60%. Quando fazer coronariografia?',
+            text: 'Trombólise administrada há 90 minutos. Supra ST reduziu 50% (resolução parcial). Dor melhorou de 9/10 para 4/10. Conduta coronariográfica:',
             options: [
-                { text: 'Coronariografia em 2-24h (estratégia fármaco-invasiva)', next: 'ending_good_farmacoinvasiva', points: 3 },
-                { text: 'Apenas se houver reoclusão (dor retorna + re-elevação ST)', next: 'ending_regular_rescue', points: 0 },
-                { text: 'Após alta — ambulatorial em 30 dias', next: 'ending_regular_rescue', points: -1 },
-                { text: 'Repetir trombólise (segunda dose de tenecteplase)', next: 'ending_bleeding_lysis', points: -2 }
+                { text: 'Coronariografia de rotina em 2-24h (estratégia fármaco-invasiva) — independente de sintomas residuais', next: 'ending_good_farmacoinvasiva', points: 3 },
+                { text: 'Coronariografia apenas se houver falha de reperfusão (dor mantida + supra não resolveu > 50%)', next: 'ending_regular_rescue', points: 0 },
+                { text: 'Alta hospitalar em 48h se troponina em queda + ECG estável — coronariografia ambulatorial em 30 dias', next: 'ending_regular_rescue', points: -1 },
+                { text: 'Administrar segunda dose de Tenecteplase (50% da dose) para completar a reperfusão — depois coronariografia', next: 'ending_bleeding_lysis', points: -2 }
             ]
         },
         'ending_good_farmacoinvasiva': {
@@ -158,12 +158,12 @@ const novelaCases = [
         },
         'delayed_shock': {
             type: 'choice',
-            text: 'Paciente evoluiu para choque cardiogênico (PA 82/48, extremidades frias, oligúria). Troponina voltou altíssima. Delta T agora: 2h30. O que fazer?',
+            text: 'Paciente em choque cardiogênico (PA 82/48, FC 120, extremidades frias, livedo, oligúria). ECG mantém supra ST. Lactato 6,8. Conduta:',
             options: [
-                { text: 'Cateterismo de emergência + suporte com noradrenalina + considerar BIA', next: 'ending_shock_survived', points: 3 },
-                { text: 'Dobutamina + Nitroglicerina IV para melhorar perfusão', next: 'ending_shock_poor', points: 0 },
-                { text: 'Trombólise agora (já que demorou para ir ao cateterismo)', next: 'ending_shock_poor', points: -1 },
-                { text: 'Volume agressivo (2L de SF em bolus) + vasopressores', next: 'ending_shock_survived', points: 1 }
+                { text: 'Noradrenalina 0,1mcg/kg/min IV + cateterismo de emergência + considerar balão intra-aórtico ou Impella', next: 'ending_shock_survived', points: 3 },
+                { text: 'Dobutamina 10mcg/kg/min + Nitroglicerina IV para pós-carga + nova troponina em 6h para reavaliar', next: 'ending_shock_poor', points: -1 },
+                { text: 'Tenecteplase IV (trombólise de resgate) + Noradrenalina + transferência para centro terciário', next: 'ending_shock_poor', points: 0 },
+                { text: 'Cristaloide 30mL/kg em 1h (protocolo de sepse) + Dobutamina + reavaliar PA após volume', next: 'ending_shock_survived', points: 1 }
             ]
         },
         'ending_shock_survived': {
