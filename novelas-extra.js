@@ -363,9 +363,154 @@ const novelaCasesExtra = [
             next: 'eda_findings'
         }
     }
+},
+// ===================================================================
+// CASO 9: PNEUMONIA GRAVE NO IDOSO
+// ===================================================================
+{
+    id: 'novela_pneumonia',
+    title: 'O Avô com Febre e Confusão',
+    icon: '🤒',
+    description: 'Homem de 78 anos trazido pela família com febre, tosse produtiva e confusão mental há 24h. CURB-65 alto — UTI ou enfermaria?',
+    endings: 3,
+    nodes: {
+        'start': { type: 'narrative', text: '🏥 Terça, 11h. Idoso de 78 anos, aposentado, DPOC leve. Febre 38.9°C há 3 dias + tosse com catarro amarelado. Desde ontem "não reconhece a família". Estertores em base D.', vitals: { fc: 105, pas: 105, pad: 58, spo2: 90, fr: 28 }, next: 'pneu_severity' },
+        'pneu_severity': {
+            type: 'choice',
+            text: 'CURB-65: Confusão(+1) + Ureia 58(+1) + FR 28(+1) + PA 105/58(0) + Idade 78(+1) = 4. Onde internar?',
+            options: [
+                { text: 'UTI (CURB-65 ≥ 4 = mortalidade ~30%) + hemoculturas + ATB IV amplo espectro na 1ª hora', next: 'pneu_uti', points: 3 },
+                { text: 'Enfermaria com Ceftriaxona 1g/dia IV + Azitromicina 500mg/dia IV + O2 suplementar', next: 'pneu_enfermaria', points: 1 },
+                { text: 'Tratamento ambulatorial: Amoxicilina-Clavulanato 875mg VO 12/12h + retorno em 48h', next: 'pneu_home', points: -2 },
+                { text: 'Observação em emergência 24h: Levofloxacino 750mg IV + alta se afebril', next: 'pneu_enfermaria', points: 0 }
+            ]
+        },
+        'pneu_uti': {
+            type: 'choice',
+            text: 'UTI. Hemoculturas colhidas. ATB empírico para PAC grave:',
+            options: [
+                { text: 'Ceftriaxona 2g/dia IV + Azitromicina 500mg/dia IV (cobre pneumococo + atípicos)', next: 'ending_pneu_best', points: 3 },
+                { text: 'Piperacilina-Tazobactam 4,5g 6/6h + Vancomicina 15mg/kg 12/12h (cobertura MRSA + Pseudomonas)', next: 'ending_pneu_regular', points: -1 },
+                { text: 'Meropenem 1g 8/8h + Levofloxacino 750mg/dia + Fluconazol 400mg/dia', next: 'ending_pneu_regular', points: -1 },
+                { text: 'Amoxicilina-Clavulanato 1,2g 8/8h IV + Claritromicina 500mg 12/12h IV', next: 'ending_pneu_best', points: 2 }
+            ]
+        },
+        'ending_pneu_best': { type: 'ending', title: '⭐ MELHOR DESFECHO', text: 'ATB correto. Hemocultura: S. pneumoniae sensível. Melhora em 48h. Alta em 7 dias. Vacinação pneumocócica atualizada.', grade: 'excellent', lesson: 'PAC grave: betalactâmico + macrolídeo. Só escalonar para Pipe-Tazo/Vancomicina se fatores de risco para MDR (hospitalização recente, ATB prévio, bronquiectasias).' },
+        'ending_pneu_regular': { type: 'ending', title: '⚠️ REGULAR — ATB Excessivo', text: 'Espectro amplo demais causou nefrotoxicidade (Vancomicina) ou diarreia por C. difficile. Internação prolongada (15 dias). Recupera com complicações.', grade: 'regular', lesson: 'Não sobre-tratar PAC comunitária. MRSA/Pseudomonas só com fatores de risco específicos. Mais amplo ≠ melhor.' },
+        'pneu_enfermaria': { type: 'narrative', text: 'Enfermaria. CURB-65=4 deveria ir para UTI. À noite: SpO2 82%, PA 85/45. Transferido tardiamente para UTI.', vitals: { fc: 120, pas: 85, pad: 45, spo2: 82, fr: 32 }, next: 'pneu_uti' },
+        'pneu_home': { type: 'ending', title: '💀 ÓBITO — Alta Inadequada', text: 'Idoso confuso com CURB-65=4 recebeu alta. Não toma medicação. 48h: choque séptico em casa. SAMU: óbito na chegada.', grade: 'death', lesson: 'CURB-65 ≥ 4 = mortalidade 30%. Confusão em idoso com infecção = disfunção orgânica. NUNCA alta.' }
+    }
+},
+// ===================================================================
+// CASO 10: FIBRILAÇÃO ATRIAL COM RVR
+// ===================================================================
+{
+    id: 'novela_fa',
+    title: 'A Aposentada com Coração Disparado',
+    icon: '💓',
+    description: 'Mulher de 72 anos com palpitação intensa há 6h. FC 165. Irregular. Está ficando sem fôlego. Controlar a frequência ou cardioverter?',
+    endings: 3,
+    nodes: {
+        'start': { type: 'narrative', text: '🏥 Quarta, 16h. Mulher 72 anos. Palpitação + dispneia há 6h. ECG: ritmo irregularmente irregular, FC 165, sem ondas P. FA com RVR. HAS + DM2. Primeira vez com arritmia.', vitals: { fc: 165, pas: 138, pad: 85, spo2: 93, fr: 22 }, next: 'fa_control' },
+        'fa_control': {
+            type: 'choice',
+            text: 'FA com RVR. Paciente sintomática mas estável (PA 138/85, Glasgow 15, sem choque). Controle de frequência:',
+            options: [
+                { text: 'Metoprolol 5mg IV lento a cada 5 min (até 3 doses) — alvo FC < 110 + monitorização + avaliar anticoagulação', next: 'fa_controlled', points: 3 },
+                { text: 'Cardioversão elétrica sincronizada 120-200J sob sedação — FA sintomática com > 48h sem ECO-TE/anticoagulação prévia', next: 'fa_cve_avc', points: -2 },
+                { text: 'Amiodarona 150mg IV em 10 min + manutenção 1mg/min — cardioversão farmacológica + controle de FC', next: 'fa_controlled', points: 1 },
+                { text: 'Digoxina 0,5mg IV + Diltiazem 0,25mg/kg IV — controle duplo para FC mais rápido', next: 'fa_controlled', points: 0 }
+            ]
+        },
+        'fa_controlled': {
+            type: 'choice',
+            text: 'FC controlada (108 bpm). CHA₂DS₂-VASc: idade 72(+1) + HAS(+1) + DM(+1) + sexo feminino(+1) = 4. Anticoagulação:',
+            options: [
+                { text: 'DOAC (Rivaroxabana 20mg/dia ou Apixabana 5mg 12/12h) — indicada com score ≥ 2 + checar função renal', next: 'ending_fa_best', points: 3 },
+                { text: 'AAS 100mg/dia + Clopidogrel 75mg/dia — dupla antiagregação como alternativa com menor risco de sangramento', next: 'ending_fa_avc', points: -2 },
+                { text: 'Warfarina 5mg/dia (alvo INR 2-3) + Enoxaparina SC como ponte até INR terapêutico', next: 'ending_fa_good', points: 1 },
+                { text: 'Sem anticoagulação — primeiro cardioverter para sinusal. Se mantiver ritmo sinusal, não precisa anticoagular', next: 'ending_fa_avc', points: -2 }
+            ]
+        },
+        'ending_fa_best': { type: 'ending', title: '⭐ MELHOR DESFECHO', text: 'DOAC iniciado. Metoprolol VO para manter FC < 110. Alta em 2 dias. Risco de AVC reduzido 70%. Seguimento com cardiologista.', grade: 'excellent', lesson: 'FA + CHA₂DS₂-VASc ≥ 2: anticoagulação obrigatória. DOACs > Warfarina na FA não-valvar. AAS NÃO substitui anticoagulação.' },
+        'ending_fa_good': { type: 'ending', title: '✅ BOM — Warfarina é Válida', text: 'Warfarina com bridge de heparina. INR terapêutico em 5 dias. Funciona, mas requer controle frequente de INR. TTR precisa ser > 65%.', grade: 'good', lesson: 'Warfarina é alternativa válida mas inferior a DOACs em praticidade e segurança. TTR < 65% = sem benefício.' },
+        'ending_fa_avc': { type: 'ending', title: '💀 AVC em 3 Meses', text: 'Sem anticoagulação adequada + FA + score 4. Em 3 meses: hemiparesia súbita. AVC cardioembólico. Sequela permanente.', grade: 'death', lesson: 'AAS NÃO protege contra AVC na FA. Reversão para sinusal NÃO elimina necessidade de anticoagular se score ≥ 2 (FA pode recorrer assintomática).' },
+        'fa_cve_avc': { type: 'ending', title: '💀 AVC PÓS-CARDIOVERSÃO', text: 'CVE em FA > 48h sem anticoagulação/ECO-TE → trombo atrial deslocado → AVC isquêmico extenso. Hemiplegia + afasia.', grade: 'death', lesson: 'FA > 48h ou duração incerta: NÃO cardioverter sem ECO-TE negativo OU ≥ 3 semanas de anticoagulação. CVE mobiliza trombos.' }
+    }
+},
+// ===================================================================
+// CASO 11: CONVULSÃO FEBRIL NA CRIANÇA
+// ===================================================================
+{
+    id: 'novela_conv_febril',
+    title: 'O Bebê que Tremeu na Febre',
+    icon: '👶',
+    description: 'Menino de 18 meses com febre alta e crise convulsiva de 2 minutos. Primeiro episódio. Mãe desesperada. O que é grave e o que é benigno?',
+    endings: 3,
+    nodes: {
+        'start': { type: 'narrative', text: '🏥 Segunda, 19h. Mãe entra correndo: "Meu filho tremeu todo, ficou duro, olhos reviraram!" Durou ~2 min, generalizado. Agora pós-ictal (sonolento). T 39.5°C, coriza há 1 dia. Vacinas em dia. Sem rigidez nuca, fontanela normotensa.', vitals: { fc: 145, pas: 90, pad: 55, spo2: 97, fr: 30 }, next: 'conv_classify' },
+        'conv_classify': {
+            type: 'choice',
+            text: '18 meses, crise generalizada < 15 min, episódio único, sem déficit pós-ictal focal, fontanela normal. Classificação:',
+            options: [
+                { text: 'Convulsão febril SIMPLES (6m-5a, generalizada, <15min, única, sem déficit) — antitérmico + observação + orientação', next: 'conv_simple', points: 3 },
+                { text: 'Provável meningite (febre + convulsão < 18m = PL obrigatória) — Ceftriaxona empírica + PL imediata', next: 'conv_meningitis', points: 1 },
+                { text: 'Convulsão febril COMPLEXA (precisa EEG + RM + anticonvulsivante profilático)', next: 'conv_complex', points: -1 },
+                { text: 'Debut epiléptico (primeiro episódio = início de epilepsia) — Fenobarbital 5mg/kg/dia + neuropediatria urgente', next: 'conv_complex', points: -1 }
+            ]
+        },
+        'conv_simple': {
+            type: 'choice',
+            text: 'Convulsão febril simples. Criança desperta após 30 min, brinca, sem déficit neurológico. IVAS provável. Conduta:',
+            options: [
+                { text: 'Antitérmico + observação 4-6h + orientação detalhada aos pais sobre recorrência e sinais de alarme + alta se estável', next: 'ending_conv_best', points: 3 },
+                { text: 'Hemograma + PCR + hemocultura + EAS + PL + Rx tórax + internação para investigação', next: 'ending_conv_regular', points: -1 },
+                { text: 'Antitérmico + Diazepam retal prescrito para casa + Fenobarbital profilático 2 anos + neuro', next: 'ending_conv_regular', points: -1 },
+                { text: 'Antitérmico + observação 2h + alta com orientação + retorno se sinais de alarme', next: 'ending_conv_best', points: 2 }
+            ]
+        },
+        'ending_conv_best': { type: 'ending', title: '⭐ MELHOR DESFECHO', text: 'Criança observada, ativa, sem novos episódios. Pais orientados: convulsão febril simples é BENIGNA (3-5% das crianças), não causa epilepsia, pode recorrer (30%). Se > 5 min: SAMU.', grade: 'excellent', lesson: 'Convulsão febril SIMPLES > 12 meses com vacinas em dia e exame normal: NÃO precisa PL, NÃO precisa EEG, NÃO precisa anticonvulsivante. Orientação + antitérmico.' },
+        'ending_conv_regular': { type: 'ending', title: '⚠️ SOBRE-INVESTIGAÇÃO', text: 'PL desnecessária (dor + risco em criança com exame normal > 12m) ou Fenobarbital crônico (sedação, déficit cognitivo) sem indicação. Criança medicalizada sem necessidade.', grade: 'regular', lesson: 'Saber NÃO fazer é tão importante quanto saber fazer. Fenobarbital profilático na convulsão febril simples NÃO é recomendado (risco > benefício).' },
+        'conv_meningitis': { type: 'narrative', text: 'Raciocínio válido em < 12 meses. Mas: 18 meses + vacinas completas + fontanela normal + sem rigidez nuca = PL não obrigatória (AAP 2011). Observação vigilante.', vitals: { fc: 130, pas: 88, pad: 55, spo2: 98, fr: 26 }, next: 'conv_simple' },
+        'conv_complex': { type: 'narrative', text: 'Reveja critérios: generalizada ✓ (<15min ✓, única ✓, sem déficit ✓) = SIMPLES, não complexa. Epilepsia = 2 crises NÃO PROVOCADAS. Febre = provocada.', vitals: { fc: 130, pas: 88, pad: 55, spo2: 98, fr: 26 }, next: 'conv_simple' }
+    }
+},
+// ===================================================================
+// CASO 12: GRAVIDEZ ECTÓPICA
+// ===================================================================
+{
+    id: 'novela_ectopica',
+    title: 'A Jovem com Dor e Atraso Menstrual',
+    icon: '🩺',
+    description: 'Mulher de 26 anos com dor em fossa ilíaca + atraso de 6 semanas + síncope. Útero vazio na USG. Bomba-relógio tubária.',
+    endings: 3,
+    nodes: {
+        'start': { type: 'narrative', text: '🏥 Quinta, 14h. Mulher 26 anos, G1P0. Dor em baixo ventre E há 3h + sangramento vaginal escuro + atraso menstrual ~6 semanas. "Desmaiei no banheiro." PA 100/62, FC 98. Dor à mobilização cervical.', vitals: { fc: 98, pas: 100, pad: 62, spo2: 98, fr: 18 }, next: 'ect_workup' },
+        'ect_workup': {
+            type: 'choice',
+            text: 'Mulher fértil + atraso menstrual + dor pélvica + síncope + dor à mobilização cervical. Primeiro exame:',
+            options: [
+                { text: 'Beta-hCG sérico quantitativo + USG transvaginal de urgência (obrigatório em mulher fértil com dor pélvica)', next: 'ect_confirmed', points: 3 },
+                { text: 'TC de abdome e pelve com contraste IV para visualizar massa/líquido livre', next: 'ect_confirmed', points: 0 },
+                { text: 'Teste de gravidez urinário + USG abdominal + encaminhar para ginecologia em 48h', next: 'ect_rupture', points: -2 },
+                { text: 'Laparoscopia diagnóstica imediata (dor pélvica + síncope = abdome agudo ginecológico)', next: 'ect_treatment', points: 1 }
+            ]
+        },
+        'ect_confirmed': { type: 'narrative', text: '🔬 Beta-hCG: 4.500. USG TV: útero VAZIO (beta > 2.000 sem saco = ectópica). Massa anexial E 3,2 cm. Líquido livre em fundo de saco.', vitals: { fc: 102, pas: 98, pad: 60, spo2: 98, fr: 18 }, next: 'ect_treatment' },
+        'ect_treatment': {
+            type: 'choice',
+            text: 'Ectópica tubária íntegra. Beta 4.500. Massa 3,2cm. Líquido livre pequeno. PA estável. Hb 11,2. Conduta:',
+            options: [
+                { text: 'Laparoscopia com salpingostomia (preservar tuba) — abordagem cirúrgica minimamente invasiva', next: 'ending_ect_best', points: 3 },
+                { text: 'Metotrexato 50mg/m² IM dose única — tratamento clínico (ectópica íntegra + estável + beta < 5.000 + sem BCF)', next: 'ending_ect_best', points: 2 },
+                { text: 'Laparotomia com salpingectomia bilateral (retirar ambas tubas para evitar recorrência)', next: 'ending_ect_regular', points: -2 },
+                { text: 'Conduta expectante: beta-hCG seriado 48/48h — pode resolver espontaneamente', next: 'ending_ect_rupture', points: -1 }
+            ]
+        },
+        'ending_ect_best': { type: 'ending', title: '⭐ MELHOR DESFECHO — Tuba Preservada', text: 'Abordagem adequada. Tuba preservada. Beta em queda. Fertilidade futura: 60-70% de chance de gestação intrauterina.', grade: 'excellent', lesson: 'Ectópica íntegra + estável + beta < 5.000: MTX OU laparoscopia com salpingostomia. Preservar tuba em mulher com desejo reprodutivo.' },
+        'ending_ect_regular': { type: 'ending', title: '⚠️ REGULAR — Excesso Cirúrgico', text: 'Salpingectomia BILATERAL sem indicação. Fertilidade natural eliminada. Paciente precisará de FIV para engravidar. Cirurgia desproporcional.', grade: 'regular', lesson: 'Salpingectomia bilateral só se: ectópica recorrente bilateral ou desejo de contracepção. Nunca como primeira abordagem em mulher jovem nulípara.' },
+        'ending_ect_rupture': { type: 'ending', title: '💀 RUPTURA — Choque Hemorrágico', text: 'Expectante com beta 4.500 + líquido livre = RISCO. 36h depois: ruptura tubária. PA 70/40. Laparotomia de emergência. Salpingectomia + transfusão 4U. Quase morreu.', grade: 'death', lesson: 'Expectante só se beta < 1.000-1.500 + em queda + SEM líquido livre. Com beta 4.500 + líquido: intervenção obrigatória.' },
+        'ect_rupture': { type: 'narrative', text: 'Encaminhada para gineco em 48h. 12h depois: dor intensa + PA 75/42. Ruptura tubária! SAMU traz de volta.', vitals: { fc: 130, pas: 75, pad: 42, spo2: 94, fr: 24 }, next: 'ect_treatment' }
+    }
 }
 ];
-
-
-// Lotes 2, 3 e 4 serão adicionados em breve — placeholder para deploy parcial
-// O sistema já reconhece os 4 primeiros casos extras.
