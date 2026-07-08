@@ -21,6 +21,7 @@
             <button class="tab-btn" data-tab="calculadoras">🧮 Calculadoras</button>
             <button class="tab-btn" data-tab="fluxogramas">📊 Fluxogramas</button>
             <button class="tab-btn" data-tab="casos">📚 Casos</button>
+            <button class="tab-btn" data-tab="dicionario">📖 Dicionário</button>
             <button class="tab-btn" data-tab="testes">📝 Testes</button>
         </nav>
 
@@ -377,6 +378,19 @@
             <div id="cases-active" class="cases-active hidden"></div>
         </div><!-- Fim tab-casos -->
 
+        <!-- ABA: Dicionário Clínico -->
+        <div id="tab-dicionario" class="tab-content">
+            <div class="dict-header">
+                <h2>📖 Dicionário Clínico</h2>
+                <p>Termos médicos explicados em linguagem simples. Busque qualquer palavra que não entendeu.</p>
+                <div class="dict-search-box">
+                    <input type="text" id="dict-search" placeholder="Digite o termo... (ex: taquicardia, dispneia, edema)">
+                </div>
+                <div class="dict-alphabet" id="dict-alphabet"></div>
+            </div>
+            <div id="dict-content" class="dict-content"></div>
+        </div><!-- Fim tab-dicionario -->
+
         <!-- ABA: Testes de Conhecimento -->
         <div id="tab-testes" class="tab-content">
             <div class="quiz-header">
@@ -434,5 +448,6 @@
     <script src="calculadoras.js"></script>
     <script src="fluxogramas.js"></script>
     <script src="casos-clinicos.js"></script>
+    <script src="dicionario.js"></script>
 </body>
 </html>
